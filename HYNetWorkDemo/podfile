@@ -3,5 +3,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 inhibit_all_warnings!
 
+target 'HYNetworkDemo' do
 pod 'AFNetworking', '3.0.4'
 pod 'YYModel', '0.9.12'
+end
