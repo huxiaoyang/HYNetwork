@@ -38,7 +38,14 @@ static const void *CustomURLCacheDateKey = @"com.XiaoYang.CustomURLCacheDateKey"
     NSCachedURLResponse *cachedResponse = [super cachedResponseForRequest:request];
 
     // 在这里限制只允许GET请求缓存
-    if ([request.HTTPMethod compare:@"GET"] != NSOrderedSame && self.cacheExpirationInterval > 0) {
+    if ([request.HTTPMethod compare:@"GET"] != NSOrderedSame) {
+        if (cachedResponse) {
+            [self removeCachedResponseForRequest:request];
+        }
+        return nil;
+    }
+    
+    if (self.cacheExpirationInterval <= 0) {
         if (cachedResponse) {
             [self removeCachedResponseForRequest:request];
         }
@@ -70,7 +77,11 @@ static const void *CustomURLCacheDateKey = @"com.XiaoYang.CustomURLCacheDateKey"
 
 - (void)storeCachedResponse:(NSCachedURLResponse *)cachedResponse
                  forRequest:(NSURLRequest *)request {
-    if ([request.HTTPMethod compare:@"GET"] != NSOrderedSame && self.cacheExpirationInterval > 0) {
+    if ([request.HTTPMethod compare:@"GET"] != NSOrderedSame) {
+        return [super storeCachedResponse:cachedResponse forRequest:request];
+    }
+    
+    if (self.cacheExpirationInterval <= 0) {
         return [super storeCachedResponse:cachedResponse forRequest:request];
     }
     
