@@ -29,10 +29,10 @@
                               };
     
     
-    // 设置缓存时间即开启缓存，默认不开启
-    //    config.cacheExpirationInterval = 300; // 不为0时开启缓存
-    // 缓存策略
-    //    config.customURLCachePolicy = BSRequestUseCacheWhenNoNetwork;
+////     设置缓存时间即开启缓存，默认不开启
+//        config.cacheExpirationInterval = 300; // 不为0时开启缓存
+////     缓存策略
+//        config.customURLCachePolicy = BSRequestUseCacheWhenAnytime;
     
 }
 
