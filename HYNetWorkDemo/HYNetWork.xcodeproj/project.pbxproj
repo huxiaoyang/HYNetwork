@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		80E9FC572CC04DF2FD7B5ACC /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFBB2B2F4A45CF84A0677642 /* libPods.a */; };
+		E14C0DF5ECFBA1BA3D195CE7 /* libPods-HYNetWork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */; };
 		ED016A861DDD542B0028AB0D /* BSCacheRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED016A831DDD542B0028AB0D /* BSCacheRequest.m */; };
 		ED016A871DDD542B0028AB0D /* BSNetworkPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */; };
 		ED09F82A1D194AA700F07389 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8291D194AA700F07389 /* main.m */; };
@@ -25,8 +25,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4628A5586CD3662C719B704E /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		AB6178359A3F1FBCBB03B6BF /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		A2294A5D113268C727CBA5A8 /* Pods-HYNetWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HYNetWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork.debug.xcconfig"; sourceTree = "<group>"; };
+		DF13DC9C18140B914D432CD9 /* Pods-HYNetWork.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HYNetWork.release.xcconfig"; path = "Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork.release.xcconfig"; sourceTree = "<group>"; };
+		E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HYNetWork.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED016A821DDD542B0028AB0D /* BSCacheRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCacheRequest.h; sourceTree = "<group>"; };
 		ED016A831DDD542B0028AB0D /* BSCacheRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCacheRequest.m; sourceTree = "<group>"; };
 		ED016A841DDD542B0028AB0D /* BSNetworkPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkPrivate.h; sourceTree = "<group>"; };
@@ -54,7 +55,6 @@
 		ED09F8551D1A56AA00F07389 /* testRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testRequest.m; sourceTree = "<group>"; };
 		ED09F8571D1A56D500F07389 /* testModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testModel.h; sourceTree = "<group>"; };
 		ED09F8581D1A56D500F07389 /* testModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testModel.m; sourceTree = "<group>"; };
-		EFBB2B2F4A45CF84A0677642 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,38 +62,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80E9FC572CC04DF2FD7B5ACC /* libPods.a in Frameworks */,
+				E14C0DF5ECFBA1BA3D195CE7 /* libPods-HYNetWork.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0E0D3AE51AAC34B94158A125 /* Pods */ = {
+		93C466C7EE48536DE578BE3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4628A5586CD3662C719B704E /* Pods.debug.xcconfig */,
-				AB6178359A3F1FBCBB03B6BF /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		1069F632C4F5B6D8BA2CC74A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				EFBB2B2F4A45CF84A0677642 /* libPods.a */,
+				E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D9FAFC90FDC55AEA70E95D98 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A2294A5D113268C727CBA5A8 /* Pods-HYNetWork.debug.xcconfig */,
+				DF13DC9C18140B914D432CD9 /* Pods-HYNetWork.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		ED09F81C1D194AA700F07389 = {
 			isa = PBXGroup;
 			children = (
 				ED09F83F1D19562800F07389 /* Classes */,
-				1069F632C4F5B6D8BA2CC74A /* Frameworks */,
 				ED09F8271D194AA700F07389 /* HYNetWork */,
-				0E0D3AE51AAC34B94158A125 /* Pods */,
 				ED09F8261D194AA700F07389 /* Products */,
+				D9FAFC90FDC55AEA70E95D98 /* Pods */,
+				93C466C7EE48536DE578BE3B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -176,12 +176,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = ED09F83C1D194AA700F07389 /* Build configuration list for PBXNativeTarget "HYNetWork" */;
 			buildPhases = (
-				C362F2C942CE8E2CDC71D336 /* Check Pods Manifest.lock */,
+				70C09D42658A533B42591F7A /* [CP] Check Pods Manifest.lock */,
 				ED09F8211D194AA700F07389 /* Sources */,
 				ED09F8221D194AA700F07389 /* Frameworks */,
 				ED09F8231D194AA700F07389 /* Resources */,
-				546E55DA0E8D2A2B98267CDF /* Embed Pods Frameworks */,
-				C8049D36BC10D6E242A11865 /* Copy Pods Resources */,
+				84B06D9A2CDDA217A9B73C9A /* [CP] Embed Pods Frameworks */,
+				751EE99EB1837DEBABFE115C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -238,49 +238,49 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		546E55DA0E8D2A2B98267CDF /* Embed Pods Frameworks */ = {
+		70C09D42658A533B42591F7A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		C362F2C942CE8E2CDC71D336 /* Check Pods Manifest.lock */ = {
+		751EE99EB1837DEBABFE115C /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C8049D36BC10D6E242A11865 /* Copy Pods Resources */ = {
+		84B06D9A2CDDA217A9B73C9A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -409,7 +409,7 @@
 		};
 		ED09F83D1D194AA700F07389 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4628A5586CD3662C719B704E /* Pods.debug.xcconfig */;
+			baseConfigurationReference = A2294A5D113268C727CBA5A8 /* Pods-HYNetWork.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
@@ -425,7 +425,7 @@
 		};
 		ED09F83E1D194AA700F07389 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AB6178359A3F1FBCBB03B6BF /* Pods.release.xcconfig */;
+			baseConfigurationReference = DF13DC9C18140B914D432CD9 /* Pods-HYNetWork.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
