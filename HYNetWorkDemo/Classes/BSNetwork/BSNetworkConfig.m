@@ -9,10 +9,10 @@
 #import "BSNetworkConfig.h"
 
 
-NSString *const REQUEST_DATA      = @"data";
-NSString *const REQUEST_MESSAGE   = @"message";
-NSString *const REQUEST_CODE      = @"code";
-NSString *const REQUEST_TIME      = @"timestamp";
+NSString *const REQUEST_DATA      = @"com.XiaoYang.json.data";
+NSString *const REQUEST_MESSAGE   = @"com.XiaoYang.json.message";
+NSString *const REQUEST_CODE      = @"com.XiaoYang.json.code";
+NSString *const REQUEST_TIME      = @"com.XiaoYang.json.timestamp";
 
 
 @implementation BSNetworkConfig
@@ -32,7 +32,6 @@ NSString *const REQUEST_TIME      = @"timestamp";
     if (self) {
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
         _securityPolicy = [AFSecurityPolicy defaultPolicy];
-        _cacheExpirationInterval = 0;
         _successCodeStatus = @0;
         _responseParams = @{REQUEST_DATA    : @"data",
                             REQUEST_MESSAGE : @"msg",
@@ -41,25 +40,6 @@ NSString *const REQUEST_TIME      = @"timestamp";
                             };
     }
     return self;
-}
-
-- (void)setCacheExpirationInterval:(NSTimeInterval)cacheExpirationInterval {
-    _cacheExpirationInterval = cacheExpirationInterval;
-    if (cacheExpirationInterval > 0) {
-        BSCustomURLCache *sharedCache = [BSCustomURLCache standardURLCache];
-        sharedCache.cacheExpirationInterval = cacheExpirationInterval;
-        sharedCache.customURLCachePolicy = BSRequestUseCacheWhenAnytime;
-        [NSURLCache setSharedURLCache:sharedCache];
-    }
-}
-
-- (void)setCustomURLCachePolicy:(BSCustomURLCachePolicy)customURLCachePolicy {
-    _customURLCachePolicy = customURLCachePolicy;
-    if (self.cacheExpirationInterval > 0) {
-        [[BSCustomURLCache standardURLCache] setCustomURLCachePolicy:customURLCachePolicy];
-    } else {
-        NSAssert(NO, @"先设置cacheExpirationInterval来开启缓存，然后再设置缓存策略");
-    }
 }
 
 @end

@@ -9,12 +9,27 @@
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
 
+FOUNDATION_EXPORT NSString *const _Nonnull BSRequestErrorDomain;
 
 typedef NS_ENUM(NSUInteger, BSRequestMethod) {
     BSRequestMethodGet,
     BSRequestMethodPost,
     BSRequestMethodUpload,
     BSRequestMethodDownload,
+};
+
+typedef NS_ENUM(NSUInteger, BSRequestSerializerType) {
+    // NSData type
+    BSRequestSerializerTypeHTTP,
+    // JSON object type
+    BSRequestSerializerTypeJSON,
+};
+
+typedef NS_ENUM(NSInteger, BSResponseSerializerType) {
+    // NSData type
+    BSResponseSerializerTypeHTTP,
+    // JSON object type
+    BSResponseSerializerTypeJSON,
 };
 
 
@@ -72,6 +87,16 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  */
 - (nullable Class)modelClass;
 
+/**
+ *  @return 请求类型
+ */
+- (BSRequestSerializerType)requestSerializerType;
+
+/**
+ *  @return 返回类型
+ */
+- (BSResponseSerializerType)responseSerializerType;
+
 
 /**
  *  上传文件事件时重写该方法
@@ -117,6 +142,29 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  *  取消当前网络请求
  */
 - (void)taskCancel;
+
+
+/**
+ *  获取当前网络请求完整URL
+ */
+- (nullable NSURL *)currentCompleteURL;
+
+
+#pragma mark - 请求返回数据
+/**
+ *  请求返回对象
+ */
+@property (nonatomic, strong, nullable) id responseObject;
+
+/**
+ *  返回NSData对象
+ */
+@property (nonatomic, strong, nullable) NSData *responseData;
+
+/**
+ *  返回json对象
+ */
+@property (nonatomic, strong, nullable) id responseJOSNObject;
 
 
 @end

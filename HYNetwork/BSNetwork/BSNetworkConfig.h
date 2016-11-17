@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSCustomURLCache.h"
 #import "AFNetworking.h"
 
-extern NSString *const REQUEST_DATA;        // json data 数据
-extern NSString *const REQUEST_MESSAGE;     // json message 信息
-extern NSString *const REQUEST_CODE;        // json code 状态码
-extern NSString *const REQUEST_TIME;        // json time 时间
+extern NSString *const REQUEST_DATA;        // json data 数据的key
+extern NSString *const REQUEST_MESSAGE;     // json message 信息的key
+extern NSString *const REQUEST_CODE;        // json code 状态码的key
+extern NSString *const REQUEST_TIME;        // json time 时间的key 
 
 
 @interface BSNetworkConfig : NSObject
@@ -34,13 +33,6 @@ extern NSString *const REQUEST_TIME;        // json time 时间
 // 请求成功的状态码 - 默认是@0
 @property (nonatomic, strong) NSNumber *successCodeStatus;
 
-
-// 缓存时间，默认不开启，不为0时开启 - 只用于GET请求
-@property (nonatomic, assign) NSTimeInterval cacheExpirationInterval;
-
-
-// 自定义缓存策略
-@property (nonatomic, assign) BSCustomURLCachePolicy customURLCachePolicy;
 
 
 @end

@@ -8,9 +8,9 @@
 
 #import "BSAPIClient.h"
 #import "BSNetworkConfig.h"
+#import "BSNetworkPrivate.h"
 #import <objc/runtime.h>
 #import "AFNetworkActivityIndicatorManager.h"
-#import "YYModel.h"
 
 // 消息通知
 NSString *const BSAPIClientRequestFailureNotification = @"com.XiaoYang.BSAPIClientRequestFailureNotification";
@@ -38,79 +38,61 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 - (instancetype)initWithBaseURL:(NSURL *)url {
     self = [super initWithBaseURL:url];
     if (self) {
-        
         _config = [BSNetworkConfig sharedInstance];
-        self.responseSerializer.acceptableContentTypes = nil;
         self.securityPolicy = _config.securityPolicy;
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
-        if (_config.cacheExpirationInterval > 0) {
-            self.requestSerializer.cachePolicy = NSURLRequestReturnCacheDataElseLoad; // 请求加缓存策略
-        }
     }
     return self;
 }
 
 // 设置http HeaderField
+- (AFHTTPRequestSerializer *)pr_setRequestSerializer:(BSRequest *)request {
+    switch (request.requestSerializerType) {
+        case BSRequestSerializerTypeHTTP:
+            return [AFHTTPRequestSerializer serializer];
+            break;
+        case BSRequestSerializerTypeJSON:
+            return [AFJSONRequestSerializer serializer];
+            break;
+    }
+}
+
+- (AFHTTPResponseSerializer *)pr_setResponseSerializer:(BSRequest *)request {
+    switch (request.responseSerializerType) {
+        case BSResponseSerializerTypeHTTP:
+            return [AFHTTPResponseSerializer serializer];
+            break;
+        case BSResponseSerializerTypeJSON:
+            return [AFJSONResponseSerializer serializer];
+            break;
+    }
+}
+
 - (void)setUpHTTPHeaderField:(BSRequest *)request {
     if (request.requestHTTPHeaderField && [request.requestHTTPHeaderField count] != 0) {
         [request.requestHTTPHeaderField enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
             [self.requestSerializer setValue:obj forHTTPHeaderField:key];
         }];
-    } else {
-        self.requestSerializer = [AFHTTPRequestSerializer serializer];
     }
 }
 
-// 设置http 请求参数
-- (id)currentArgument:(BSRequest *)request {
-    
-    if (![request globalArgument] || [[request globalArgument] count] == 0) {
-        
-        id argument = [request requestArgument];
-        return argument;
-        
-    } else {
-        
-        id argument = [request globalArgument];
-        
-        NSMutableDictionary *mutableArgument = [argument mutableCopy];
-        NSDictionary *dict = (NSDictionary *)[request requestArgument];
-        if (dict.count > 0) {
-            [mutableArgument addEntriesFromDictionary:dict];
-        }
-        
-        return mutableArgument;
-    }
-    
-}
 
-// 设置http URL
-- (NSString *)buildRequestUrl:(BSRequest *)request {
-    NSString *detailUrl = [request requestUrl];
-    if ([detailUrl hasPrefix:@"http"]) {
-        return detailUrl;
-    }
-    
-    NSString *requestUrl;
-    if (_config.baseURL && _config.baseURL.length > 0) {
-        requestUrl = [NSString stringWithFormat:@"%@%@", [_config baseURL], detailUrl];
-    }
-    return [requestUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-}
-
+#pragma mark - start request
 
 - (void)addRequest:(BSRequest *)request {
     
+    self.requestSerializer  = [self pr_setRequestSerializer:request];
     [self setUpHTTPHeaderField:request];
+    self.responseSerializer = [self pr_setResponseSerializer:request];
     
     self.requestSerializer.timeoutInterval = [request requestTimeoutInterval];
     
-    NSString *requestURL = [self buildRequestUrl:request];
+    NSString *requestURL = [BSNetworkPrivate buildRequestUrl:request];
     
     BSRequestProgress progress = [request progressBlock];
     
     if ([request requestMethod] == BSRequestMethodGet) {    
-        id parameters = [self currentArgument:request];
+        id parameters = [BSNetworkPrivate currentArgument:request];
         request.currentURLSessionDataTask = [self GET:requestURL
                                            parameters:parameters
                                              progress:progress
@@ -137,7 +119,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
         
     }
     else if ([request requestMethod] == BSRequestMethodPost) {
-        id parameters = [self currentArgument:request];
+        id parameters = [BSNetworkPrivate currentArgument:request];
         
         request.currentURLSessionDataTask = [self POST:requestURL
                                             parameters:parameters
@@ -165,7 +147,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
         
     }
     else if ([request requestMethod] == BSRequestMethodUpload) {
-        id parameters = [self currentArgument:request];
+        id parameters = [BSNetworkPrivate currentArgument:request];
 
         BSConstructingBlock constructingBlock = [request constructingMultipartBlock];
         request.currentURLSessionDataTask = [self POST:requestURL
@@ -203,16 +185,17 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
                                                                   destination:destination
                                                             completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                                                                 
+                                                                NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:urlRequest];
+                                                                BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
+                                                                if (!currentRequest) {
+                                                                    objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+                                                                }
+                                                                
                                                                 if (error) {
-                                                                    request.error = error;
-                                                                    if (request.failureCompletionBlock) {
-                                                                        request.failureCompletionBlock(request);
-                                                                    }
+                                                                    [self downloadFailure:error withSessionTask:task];
                                                                 }
                                                                 else {
-                                                                    if (request.successCompletionBlock) {
-                                                                        request.successCompletionBlock(request);
-                                                                    }
+                                                                    [self downloadSuccess:filePath withSessionTask:task];
                                                                 }
                                                                 
                                                             }];
@@ -222,164 +205,124 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 }
 
 
-
+#pragma mark - request callback analysis
 - (void)requestSuccess:(id)responseObject withSessionTask:(NSURLSessionDataTask *)task {
     NSString *requestCode = _config.responseParams[REQUEST_CODE];
     
     BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
+    if (!request) return;
     
-    request.responseJOSNObject = responseObject;
-    id response = [self responseModel:responseObject request:request];
-    if ([response isKindOfClass:[ResponseModel class]]) {
-        request.responseModel = (ResponseModel *)response;
-    } else {
-        request.responseModel = nil;
+    NSError * __autoreleasing serializationError = nil;
+    
+    request.responseObject = responseObject;
+    switch (request.responseSerializerType) {
+        case BSResponseSerializerTypeHTTP:
+            request.responseData = responseObject;
+            break;
+        case BSResponseSerializerTypeJSON:
+            request.responseJOSNObject = responseObject;
+            request.responseData = [NSJSONSerialization dataWithJSONObject:request.responseJOSNObject options:NSJSONWritingPrettyPrinted error:&serializationError];
+            break;
     }
     
-    if ([responseObject[requestCode] isEqualToNumber:_config.successCodeStatus]) {
-        if (request.successCompletionBlock) {
-            request.successCompletionBlock(request);
-        }
+    if (serializationError) {
+        [self requestFailure:serializationError withSessionTask:task];
+        return;
     }
-    else {
-        if (request.failureCompletionBlock) {
-            request.failureCompletionBlock(request);
+    
+    @autoreleasepool {
+        [request requestCompletePreprocessor];
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (request.responseJOSNObject) {
+            id response = [BSNetworkPrivate responseModel:request.responseJOSNObject request:request];
+            if ([response isKindOfClass:[ResponseModel class]]) {
+                request.responseModel = (ResponseModel *)response;
+            } else {
+                request.responseModel = nil;
+            }
         }
         
-        NSDictionary *dict = @{@"userInfo" : response ?: @""};
-        [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
-    }
-    
-    [request clearCompletionBlock];
+        if ([responseObject[requestCode] isEqualToNumber:_config.successCodeStatus]) {
+            if (request.successCompletionBlock) {
+                request.successCompletionBlock(request);
+            }
+        }
+        else {
+            if (request.failureCompletionBlock) {
+                request.failureCompletionBlock(request);
+            }
+            
+            request.error = [NSError errorWithDomain:BSRequestErrorDomain code:-10010 userInfo:@{NSLocalizedDescriptionKey:@"HTTP请求返回成功，但是code码不等于successCodeStatus"}];
+            NSDictionary *dict = @{@"userInfo" : request};
+            [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
+        }
+        
+        [request clearCompletionBlock];
+    });
 }
 
 
 - (void)requestFailure:(NSError *)error withSessionTask:(NSURLSessionDataTask *)task{
     
     BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
+    if (!request) return;
     
     request.error = error;
-    ResponseModel *response =(ResponseModel *)[self responseModel:error];
+    ResponseModel *response =(ResponseModel *)[BSNetworkPrivate responseModel:error];
     request.responseModel = response;
     
-    if (request.failureCompletionBlock) {
-        request.failureCompletionBlock(request);
-    }
-    
-    NSDictionary *dict = @{@"userInfo" : response ?: @""};
-    [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
-    
-    [request clearCompletionBlock];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (request.failureCompletionBlock) {
+            request.failureCompletionBlock(request);
+        }
+        
+        NSDictionary *dict = @{@"userInfo" : request};
+        [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
+        
+        [request clearCompletionBlock];
+    });
 }
 
 
-#pragma mark - JSON To Object
-- (id)responseModel:(id)responseObject request:(BSRequest *)request {
+#pragma mark - download callback analysis
+- (void)downloadSuccess:(NSURL *)filePath withSessionTask:(NSURLSessionDownloadTask *)task {
+    BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
     
-    NSString * requestData = _config.responseParams[REQUEST_DATA];
-    NSString * requestCode = _config.responseParams[REQUEST_CODE];
-    NSString * requestMsg  = _config.responseParams[REQUEST_MESSAGE];
-    NSString * requestTime = _config.responseParams[REQUEST_TIME];
-    
-    
-    if ([responseObject isKindOfClass:[NSArray class]]) {
-        ResponseModel *model = [[ResponseModel alloc] init];
-        model.code = _config.successCodeStatus;
-        model.message = @"request is success";
-        model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-        model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseObject];
-        return model;
-    }
-    
-    if ([responseObject isKindOfClass:[NSDictionary class]]) {
-        
-        ResponseModel *model = [[ResponseModel alloc] init];
-        
-        if (![[responseObject allKeys] containsObject:requestData] && ![[responseObject allKeys] containsObject:requestCode]) {
-            model.code = _config.successCodeStatus;
-            model.message = @"request is success";
-            model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-            model.data = [NSDictionary yy_modelDictionaryWithClass:[request modelClass] json:responseObject];
-            return model;
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestCode]) {
-            model.code = responseObject[requestCode];
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestMsg]) {
-            model.message = responseObject[requestMsg];
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestTime]) {
-            model.timestamp = responseObject[requestTime];
-        }
-        
-        if (![[responseObject allKeys] containsObject:requestData]) {
-            model.data = nil;
-            return model;
-        }
-        
-        if (![responseObject[requestData] isKindOfClass:[NSDictionary class]] && ![responseObject[requestData] isKindOfClass:[NSArray class]]) {
-            model.data = responseObject[requestData];
-            return model;
-        }
-        
-        if ([responseObject[requestData] count] == 0 || [responseObject[requestData] isEqual:[NSNull null]]) {
-            model.data = nil;
-            return model;
-        }
-        
-        if ([responseObject[requestData] isKindOfClass:[NSArray class]]) {
-            
-            NSArray *items = responseObject[requestData];
-            if (items.count == 0) {
-                model.data = items;
-                return model;
-            }
-            
-            if (![[items firstObject] isKindOfClass:[NSDictionary class]]) {
-                model.data = items;
-                return model;
-            }
-            
-            model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseObject[requestData]];
-            return model;
-        }
-        
-        if ([responseObject[requestData] isKindOfClass:[NSDictionary class]]) {
-            model.data = [[request modelClass] yy_modelWithJSON:responseObject[requestData]];
-            return model;
-        }
-        
-        return model;
-    }
-    
-    return nil;
-}
-
-- (id)responseModel:(NSError *)error {
     ResponseModel *model = [[ResponseModel alloc] init];
-    model.code = @(error.code);
+    model.code = _config.successCodeStatus;
+    model.message = @"download is success";
     model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-#ifdef DEBUG
-    model.message = error.localizedDescription;
-#else
-    switch (error.code) {
-        case -1009: // 没有网络
-            model.message = @"失去网络链接,请检查您的网络设置!";
-            break;
-        case -1001: // 请求超时
-            model.message = @"网络状态不好,请稍候再试";
-            break;
-        default:
-            model.message = @"网络问题，稍后再试";
-            break;
-    }
-#endif
+    model.data = filePath;
     
-    return model;
+    request.responseModel = model;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (request.successCompletionBlock) {
+            request.successCompletionBlock(request);
+        }
+        
+        [request clearCompletionBlock];
+    });
 }
+
+- (void)downloadFailure:(NSError *)error withSessionTask:(NSURLSessionDownloadTask *)task {
+    BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
+
+    request.error = error;
+    ResponseModel *response =(ResponseModel *)[BSNetworkPrivate responseModel:error];
+    request.responseModel = response;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (request.failureCompletionBlock) {
+            request.failureCompletionBlock(request);
+        }
+        
+        [request clearCompletionBlock];
+    });
+}
+
 
 
 @end

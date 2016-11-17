@@ -14,6 +14,8 @@
 
 @property (nonatomic, copy, nullable) NSString *message;
 
+// 请求返回的model
+// 下载时是文件filePath
 @property (nonatomic, strong, nullable) id data;
 
 @property (nonatomic, strong, nullable) NSNumber *timestamp;

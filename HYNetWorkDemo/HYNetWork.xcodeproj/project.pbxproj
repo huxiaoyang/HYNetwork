@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		80E9FC572CC04DF2FD7B5ACC /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFBB2B2F4A45CF84A0677642 /* libPods.a */; };
+		ED016A861DDD542B0028AB0D /* BSCacheRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED016A831DDD542B0028AB0D /* BSCacheRequest.m */; };
+		ED016A871DDD542B0028AB0D /* BSNetworkPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */; };
 		ED09F82A1D194AA700F07389 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8291D194AA700F07389 /* main.m */; };
 		ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F82C1D194AA700F07389 /* AppDelegate.m */; };
 		ED09F8301D194AA700F07389 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F82F1D194AA700F07389 /* ViewController.m */; };
@@ -18,7 +20,6 @@
 		ED09F8501D1A365600F07389 /* BSBasicsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8481D1A365600F07389 /* BSBasicsRequest.m */; };
 		ED09F8511D1A365600F07389 /* BSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F84A1D1A365600F07389 /* BSRequest.m */; };
 		ED09F8521D1A365600F07389 /* BSNetworkConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */; };
-		ED09F8531D1A365600F07389 /* BSCustomURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F84E1D1A365600F07389 /* BSCustomURLCache.m */; };
 		ED09F8561D1A56AA00F07389 /* testRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8551D1A56AA00F07389 /* testRequest.m */; };
 		ED09F8591D1A56D500F07389 /* testModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8581D1A56D500F07389 /* testModel.m */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,10 @@
 /* Begin PBXFileReference section */
 		4628A5586CD3662C719B704E /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		AB6178359A3F1FBCBB03B6BF /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		ED016A821DDD542B0028AB0D /* BSCacheRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCacheRequest.h; sourceTree = "<group>"; };
+		ED016A831DDD542B0028AB0D /* BSCacheRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCacheRequest.m; sourceTree = "<group>"; };
+		ED016A841DDD542B0028AB0D /* BSNetworkPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkPrivate.h; sourceTree = "<group>"; };
+		ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSNetworkPrivate.m; sourceTree = "<group>"; };
 		ED09F8251D194AA700F07389 /* HYNetWork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HYNetWork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED09F8291D194AA700F07389 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ED09F82B1D194AA700F07389 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -45,8 +50,6 @@
 		ED09F84A1D1A365600F07389 /* BSRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSRequest.m; sourceTree = "<group>"; };
 		ED09F84B1D1A365600F07389 /* BSNetworkConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkConfig.h; sourceTree = "<group>"; };
 		ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSNetworkConfig.m; sourceTree = "<group>"; };
-		ED09F84D1D1A365600F07389 /* BSCustomURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCustomURLCache.h; sourceTree = "<group>"; };
-		ED09F84E1D1A365600F07389 /* BSCustomURLCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCustomURLCache.m; sourceTree = "<group>"; };
 		ED09F8541D1A56AA00F07389 /* testRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testRequest.h; sourceTree = "<group>"; };
 		ED09F8551D1A56AA00F07389 /* testRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testRequest.m; sourceTree = "<group>"; };
 		ED09F8571D1A56D500F07389 /* testModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testModel.h; sourceTree = "<group>"; };
@@ -154,12 +157,14 @@
 				ED09F8461D1A365600F07389 /* BSAPIClient.m */,
 				ED09F8471D1A365600F07389 /* BSBasicsRequest.h */,
 				ED09F8481D1A365600F07389 /* BSBasicsRequest.m */,
+				ED016A821DDD542B0028AB0D /* BSCacheRequest.h */,
+				ED016A831DDD542B0028AB0D /* BSCacheRequest.m */,
 				ED09F8491D1A365600F07389 /* BSRequest.h */,
 				ED09F84A1D1A365600F07389 /* BSRequest.m */,
+				ED016A841DDD542B0028AB0D /* BSNetworkPrivate.h */,
+				ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */,
 				ED09F84B1D1A365600F07389 /* BSNetworkConfig.h */,
 				ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */,
-				ED09F84D1D1A365600F07389 /* BSCustomURLCache.h */,
-				ED09F84E1D1A365600F07389 /* BSCustomURLCache.m */,
 			);
 			path = BSNetwork;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 				TargetAttributes = {
 					ED09F8241D194AA700F07389 = {
 						CreatedOnToolsVersion = 7.3.1;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -291,10 +297,11 @@
 				ED09F8561D1A56AA00F07389 /* testRequest.m in Sources */,
 				ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */,
 				ED09F84F1D1A365600F07389 /* BSAPIClient.m in Sources */,
+				ED016A871DDD542B0028AB0D /* BSNetworkPrivate.m in Sources */,
 				ED09F8511D1A365600F07389 /* BSRequest.m in Sources */,
 				ED09F8431D1A363200F07389 /* ResponseModel.m in Sources */,
+				ED016A861DDD542B0028AB0D /* BSCacheRequest.m in Sources */,
 				ED09F82A1D194AA700F07389 /* main.m in Sources */,
-				ED09F8531D1A365600F07389 /* BSCustomURLCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +408,8 @@
 			baseConfigurationReference = 4628A5586CD3662C719B704E /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HYNetWork/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -414,6 +423,8 @@
 			baseConfigurationReference = AB6178359A3F1FBCBB03B6BF /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HYNetWork/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

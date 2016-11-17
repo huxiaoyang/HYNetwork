@@ -8,6 +8,8 @@
 
 #import "BSBasicsRequest.h"
 
+NSString *const BSRequestErrorDomain = @"com.XiaoYang.requestErrorDomain";
+
 
 @implementation BSBasicsRequest
 
@@ -70,6 +72,14 @@
     return nil;
 }
 
+- (BSRequestSerializerType)requestSerializerType {
+    return BSRequestSerializerTypeHTTP;
+}
+
+- (BSResponseSerializerType)responseSerializerType {
+    return BSResponseSerializerTypeJSON;
+}
+
 - (NSURLSessionTaskState)taskState {
     return self.currentURLSessionDataTask.state;
 }
@@ -82,6 +92,10 @@
     if ([self isTaskRunning]) {
         [self.currentURLSessionDataTask cancel];
     }
+}
+
+- (NSURL *)currentCompleteURL {
+    return self.currentURLSessionDataTask.currentRequest.URL;
 }
 
 @end
