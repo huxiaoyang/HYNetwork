@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
+@class AFSecurityPolicy;
 
 extern NSString *const REQUEST_DATA;        // json data 数据的key
 extern NSString *const REQUEST_MESSAGE;     // json message 信息的key

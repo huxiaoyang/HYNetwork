@@ -7,6 +7,7 @@
 //
 
 #import "BSAPIClient.h"
+#import "BSRequest.h"
 #import "BSNetworkConfig.h"
 #import "BSNetworkPrivate.h"
 #import <objc/runtime.h>

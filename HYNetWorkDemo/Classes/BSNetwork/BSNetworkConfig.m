@@ -7,7 +7,7 @@
 //
 
 #import "BSNetworkConfig.h"
-
+#import "AFNetworking.h"
 
 NSString *const REQUEST_DATA      = @"com.XiaoYang.json.data";
 NSString *const REQUEST_MESSAGE   = @"com.XiaoYang.json.message";

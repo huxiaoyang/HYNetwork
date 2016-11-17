@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
+@protocol AFMultipartFormData;
+
 
 FOUNDATION_EXPORT NSString *const _Nonnull BSRequestErrorDomain;
 

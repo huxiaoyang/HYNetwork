@@ -7,8 +7,8 @@
 //
 
 #import "AFNetworking.h"
-#import "BSRequest.h"
 #import "ResponseModel.h"
+@class BSRequest;
 
 
 extern NSString *const _Nonnull BSAPIClientRequestFailureNotification;

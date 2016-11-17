@@ -80,7 +80,8 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     
     __weak typeof(self) weakSelf = self;
     self.successCompletionBlock = ^(BSRequest *request) {
-        if ([self filterRequestCompletion:request]) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if ([strongSelf filterRequestCompletion:request]) {
             success(request);
         }
     };
