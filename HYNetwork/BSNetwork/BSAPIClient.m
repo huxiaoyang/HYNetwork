@@ -10,6 +10,7 @@
 #import "BSRequest.h"
 #import "BSNetworkConfig.h"
 #import "BSNetworkPrivate.h"
+#import "ResponseModel.h"
 #import <objc/runtime.h>
 #import "AFNetworkActivityIndicatorManager.h"
 

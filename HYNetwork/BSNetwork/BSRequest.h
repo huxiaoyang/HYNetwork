@@ -7,7 +7,7 @@
 //
 
 #import "BSCacheRequest.h"
-#import "ResponseModel.h"
+@class ResponseModel;
 
 
 @class BSRequest;

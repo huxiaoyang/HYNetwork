@@ -7,7 +7,7 @@
 //
 
 #import "AFNetworking.h"
-#import "ResponseModel.h"
+@class ResponseModel;
 @class BSRequest;
 
 
