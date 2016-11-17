@@ -78,10 +78,9 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
 - (void)setCompletionBlockWithSuccess:(BSRequestCompletionBlock)success
                               failure:(BSRequestCompletionBlock)failure {
     
-    @WeakObj(self);
+    __weak typeof(self) weakSelf = self;
     self.successCompletionBlock = ^(BSRequest *request) {
-        @StrongObj(self);
-        if ([self filterRequestCompletion:request]) {
+        if ([weakSelf filterRequestCompletion:request]) {
             success(request);
         }
     };

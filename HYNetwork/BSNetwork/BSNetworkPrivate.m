@@ -7,6 +7,7 @@
 //
 
 #import "BSNetworkPrivate.h"
+#import "CommonCrypto/CommonDigest.h"
 #import "BSNetworkConfig.h"
 #import "BSRequest.h"
 #import "YYModel.h"
