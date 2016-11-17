@@ -6,7 +6,7 @@
 //  Copyright © 2016年 XiaoYang. All rights reserved.
 //
 
-#import "AFNetworking.h"
+#import <Foundation/Foundation.h>
 @class ResponseModel;
 @class BSRequest;
 
@@ -14,7 +14,7 @@
 extern NSString *const _Nonnull BSAPIClientRequestFailureNotification;
 
 
-@interface BSAPIClient : AFHTTPSessionManager
+@interface BSAPIClient : NSObject
 
 
 + (_Nullable instancetype)sharedClient;

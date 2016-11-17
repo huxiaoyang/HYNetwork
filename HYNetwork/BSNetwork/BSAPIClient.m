@@ -12,7 +12,14 @@
 #import "BSNetworkPrivate.h"
 #import "ResponseModel.h"
 #import <objc/runtime.h>
+
+#if __has_include(<AFNetworking/AFNetworking.h>)
+#import <AFNetworking/AFNetworking.h>
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#else
+#import "AFNetworking.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#endif
 
 // 消息通知
 NSString *const BSAPIClientRequestFailureNotification = @"com.XiaoYang.BSAPIClientRequestFailureNotification";
@@ -23,6 +30,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
 @implementation BSAPIClient {
+    AFHTTPSessionManager *_manager;
     BSNetworkConfig *_config;
 }
 
@@ -31,17 +39,18 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     static BSAPIClient *_sharedClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedClient = [BSAPIClient manager];
+        _sharedClient = [[BSAPIClient alloc] init];
     });
     return _sharedClient;
 }
 
 
-- (instancetype)initWithBaseURL:(NSURL *)url {
-    self = [super initWithBaseURL:url];
+- (instancetype)init {
+    self = [super init];
     if (self) {
+        _manager = [AFHTTPSessionManager manager];
         _config = [BSNetworkConfig sharedInstance];
-        self.securityPolicy = _config.securityPolicy;
+        _manager.securityPolicy = _config.securityPolicy;
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     }
     return self;
@@ -73,7 +82,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 - (void)setUpHTTPHeaderField:(BSRequest *)request {
     if (request.requestHTTPHeaderField && [request.requestHTTPHeaderField count] != 0) {
         [request.requestHTTPHeaderField enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            [self.requestSerializer setValue:obj forHTTPHeaderField:key];
+            [_manager.requestSerializer setValue:obj forHTTPHeaderField:key];
         }];
     }
 }
@@ -83,11 +92,11 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 - (void)addRequest:(BSRequest *)request {
     
-    self.requestSerializer  = [self pr_setRequestSerializer:request];
+    _manager.requestSerializer  = [self pr_setRequestSerializer:request];
     [self setUpHTTPHeaderField:request];
-    self.responseSerializer = [self pr_setResponseSerializer:request];
+    _manager.responseSerializer = [self pr_setResponseSerializer:request];
     
-    self.requestSerializer.timeoutInterval = [request requestTimeoutInterval];
+    _manager.requestSerializer.timeoutInterval = [request requestTimeoutInterval];
     
     NSString *requestURL = [BSNetworkPrivate buildRequestUrl:request];
     
@@ -95,7 +104,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     if ([request requestMethod] == BSRequestMethodGet) {    
         id parameters = [BSNetworkPrivate currentArgument:request];
-        request.currentURLSessionDataTask = [self GET:requestURL
+        request.currentURLSessionDataTask = [_manager GET:requestURL
                                            parameters:parameters
                                              progress:progress
                                               success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -123,7 +132,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     else if ([request requestMethod] == BSRequestMethodPost) {
         id parameters = [BSNetworkPrivate currentArgument:request];
         
-        request.currentURLSessionDataTask = [self POST:requestURL
+        request.currentURLSessionDataTask = [_manager POST:requestURL
                                             parameters:parameters
                                               progress:progress
                                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -152,7 +161,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
         id parameters = [BSNetworkPrivate currentArgument:request];
 
         BSConstructingBlock constructingBlock = [request constructingMultipartBlock];
-        request.currentURLSessionDataTask = [self POST:requestURL
+        request.currentURLSessionDataTask = [_manager POST:requestURL
                                             parameters:parameters
                              constructingBodyWithBlock:constructingBlock
                                               progress:progress
@@ -179,15 +188,15 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     }
     else if ([request requestMethod] == BSRequestMethodDownload) {
         
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:self.baseURL]];
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:_manager.baseURL]];
         
         BSDownloadDestinationBlock destination = [request downloadDestinationBlock];
-        request.currentURLSessionDownloadTask = [self downloadTaskWithRequest:urlRequest
+        request.currentURLSessionDownloadTask = [_manager downloadTaskWithRequest:urlRequest
                                                                      progress:progress
                                                                   destination:destination
                                                             completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                                                                 
-                                                                NSURLSessionDownloadTask *task = [self.session downloadTaskWithRequest:urlRequest];
+                                                                NSURLSessionDownloadTask *task = [_manager.session downloadTaskWithRequest:urlRequest];
                                                                 BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
                                                                 if (!currentRequest) {
                                                                     objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
