@@ -83,8 +83,15 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     __weak typeof(self) weakSelf = self;
     self.successCompletionBlock = ^(BSRequest *request) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        if ([strongSelf filterRequestCompletion:request]) {
+        if ([strongSelf filterSuccessRequestCompletion:request]) {
             success(request);
+        }
+    };
+    
+    self.failureCompletionBlock = ^(BSRequest *request) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if ([strongSelf filterFailureRequestCompletion:request]) {
+            failure(request);
         }
     };
     
@@ -152,7 +159,11 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     return _responseModel;
 }
 
-- (BOOL)filterRequestCompletion:(__kindof BSRequest *)request {
+- (BOOL)filterSuccessRequestCompletion:(__kindof BSRequest *)request {
+    return YES;
+}
+
+- (BOOL)filterFailureRequestCompletion:(__kindof BSRequest *)request {
     return YES;
 }
 

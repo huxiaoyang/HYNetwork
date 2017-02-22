@@ -72,7 +72,10 @@ typedef void (^BSRequestCompletionBlock) (__kindof BSRequest * _Nullable request
  *  请求返回值过滤
  @return YES-继续执行 NO-阻塞，不会执行成功回调
  */
-- (BOOL)filterRequestCompletion:(__kindof BSRequest * _Nullable )request;
+- (BOOL)filterSuccessRequestCompletion:(__kindof BSRequest * _Nullable )request;
+
+- (BOOL)filterFailureRequestCompletion:(__kindof BSRequest * _Nullable )request;
+
 
 
 @end
