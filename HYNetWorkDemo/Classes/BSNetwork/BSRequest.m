@@ -96,7 +96,7 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     };
     
 //    self.successCompletionBlock = success;
-    self.failureCompletionBlock = failure;
+//    self.failureCompletionBlock = failure;
 }
 
 
