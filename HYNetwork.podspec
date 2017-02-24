@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = 'HYNetwork'
   s.summary      = 'A simple network is based on AFNetwork.'
-  s.version      = '1.2.7'
+  s.version      = '1.2.8'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.authors      = { 'huxiaoyang' => 'yohuyang@gmail.com' }
   s.homepage     = 'https://github.com/huxiaoyang/HYNetwork'

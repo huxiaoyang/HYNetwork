@@ -94,7 +94,7 @@
             _cacheMetadata = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
             return YES;
         } @catch (NSException *exception) {
-            NSLog(@"Load cache metadata failed, reason = %@", exception.reason);
+            [BSNetworkPrivate throwExceptiont:@"Load cache metadata failed, reason = %@", exception.reason];
             return NO;
         }
     }
@@ -152,7 +152,7 @@
             case BSResponseSerializerTypeJSON:
                 _cacheJSON = [NSJSONSerialization JSONObjectWithData:_cacheData options:(NSJSONReadingOptions)0 error:&error];
                 if (error) {
-                    NSLog(@"缓存解析异常：%@", error);
+                    [BSNetworkPrivate throwExceptiont:@"缓存解析异常：%@", error];
                 }
                 return error == nil;
         }
@@ -182,7 +182,7 @@
                 metadata.appVersionString = [self pr_appVersion];
                 [NSKeyedArchiver archiveRootObject:metadata toFile:[self cacheMetadataFilePath]];
             } @catch (NSException *exception) {
-                NSLog(@"Save cache failed, reason = %@", exception.reason);
+                [BSNetworkPrivate throwExceptiont:@"Save cache failed, reason = %@", exception.reason];
             }
         }
     }
@@ -200,7 +200,7 @@
     NSError *error = nil;
     [url setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];
     if (error) {
-        NSLog(@"error to set do not backup attribute, error = %@", error);
+        [BSNetworkPrivate throwExceptiont:@"error to set do not backup attribute, error = %@", error];
     }
 }
 
@@ -223,7 +223,7 @@
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES
                                                attributes:nil error:&error];
     if (error) {
-        NSLog(@"create cache directory failed, error = %@", error);
+        [BSNetworkPrivate throwExceptiont:@"create cache directory failed, error = %@", error];
     } else {
         [self addDoNotBackupAttribute:path];
     }

@@ -25,4 +25,7 @@
 
 + (id)responseModel:(NSError *)error;
 
+#pragma mark - Throw exceptiont
++ (void)throwExceptiont:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);
+
 @end

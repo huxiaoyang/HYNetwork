@@ -12,6 +12,7 @@
 #import "ResponseModel.h"
 #import "BSRequest.h"
 #import "YYModel.h"
+#import <UIKit/UIKit.h>
 
 
 @implementation BSNetworkPrivate
@@ -179,6 +180,36 @@
 #endif
     
     return model;
+}
+
+
+#pragma mark - Throw exceptiont
++ (void)throwExceptiont:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2) {
+    va_list args;
+    va_start(args, format);
+    NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+    va_end(args);
+    
+#ifdef DEBUG
+    UIViewController *parentVC = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"我知道了"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                   }];
+    NSString *title = @"异常错误";
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:title
+                                                                     message:message
+                                                              preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:title];
+    [hogan addAttribute:NSForegroundColorAttributeName
+                  value:[UIColor redColor]
+                  range:NSMakeRange(0, title.length)];
+    [alertVC setValue:hogan forKey:@"attributedTitle"];
+    [alertVC addAction:action];
+    [parentVC presentViewController:alertVC animated:YES completion:nil];
+#endif
+    
+    NSLog(@"%@", message);
 }
 
 @end
