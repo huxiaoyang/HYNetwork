@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 @class ResponseModel;
 @class BSRequest;
+@class BSDownloadRequest;
 
 
 extern NSString *const _Nonnull BSAPIClientRequestFailureNotification;
@@ -21,5 +22,8 @@ extern NSString *const _Nonnull BSAPIClientRequestFailureNotification;
 
 
 - (void)addRequest:(BSRequest * _Nullable)request;
+
+- (void)addDownloadRequest:(BSDownloadRequest * _Nullable)request;
+
 
 @end

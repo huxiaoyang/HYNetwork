@@ -8,6 +8,7 @@
 
 #import "BSAPIClient.h"
 #import "BSRequest.h"
+#import "BSDownloadRequest.h"
 #import "BSNetworkConfig.h"
 #import "BSNetworkPrivate.h"
 #import "ResponseModel.h"
@@ -102,29 +103,19 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     BSRequestProgress progress = [request progressBlock];
     
-    if ([request requestMethod] == BSRequestMethodGet) {    
+    if ([request requestMethod] == BSRequestMethodGet) {
         id parameters = [BSNetworkPrivate currentArgument:request];
         request.currentURLSessionDataTask = [_manager GET:requestURL
                                            parameters:parameters
                                              progress:progress
                                               success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                                                   
-                                                  BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                  if (!currentRequest) {
-                                                      objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                  }
-                                                  
-                                                  [self requestSuccess:responseObject withSessionTask:task];
+                                                  [self pr_successRequest:request response:responseObject sessionTask:task];
                                                   
                                               }
                                               failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                                                   
-                                                  BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                  if (!currentRequest) {
-                                                      objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                  }
-                                                  
-                                                  [self requestFailure:error withSessionTask:task];
+                                                  [self pr_failureRequest:request error:error sessionTask:task];
                                                   
                                               }];
         
@@ -137,29 +128,19 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
                                               progress:progress
                                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                                                    
-                                                   BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                   if (!currentRequest) {
-                                                       objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                   }
-                                                   
-                                                   [self requestSuccess:responseObject withSessionTask:task];
+                                                   [self pr_successRequest:request response:responseObject sessionTask:task];
                                                    
                                                }
                                                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                                                    
-                                                   BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                   if (!currentRequest) {
-                                                       objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                   }
-                                                   
-                                                   [self requestFailure:error withSessionTask:task];
+                                                   [self pr_failureRequest:request error:error sessionTask:task];
                                                    
                                                }];
         
     }
     else if ([request requestMethod] == BSRequestMethodUpload) {
         id parameters = [BSNetworkPrivate currentArgument:request];
-
+        
         BSConstructingBlock constructingBlock = [request constructingMultipartBlock];
         request.currentURLSessionDataTask = [_manager POST:requestURL
                                             parameters:parameters
@@ -167,56 +148,145 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
                                               progress:progress
                                                success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                                                    
-                                                   BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                   if (!currentRequest) {
-                                                       objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                   }
-                                                   
-                                                   [self requestSuccess:responseObject withSessionTask:task];
+                                                   [self pr_successRequest:request response:responseObject sessionTask:task];
                                                    
                                                }
                                                failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                                                    
-                                                   BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                   if (!currentRequest) {
-                                                       objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                   }
-                                                   
-                                                   [self requestFailure:error withSessionTask:task];
+                                                   [self pr_failureRequest:request error:error sessionTask:task];
                                                    
                                                }];
-    }
-    else if ([request requestMethod] == BSRequestMethodDownload) {
-        
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:_manager.baseURL]];
-        
-        BSDownloadDestinationBlock destination = [request downloadDestinationBlock];
-        request.currentURLSessionDownloadTask = [_manager downloadTaskWithRequest:urlRequest
-                                                                     progress:progress
-                                                                  destination:destination
-                                                            completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-                                                                
-                                                                NSURLSessionDownloadTask *task = [_manager.session downloadTaskWithRequest:urlRequest];
-                                                                BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
-                                                                if (!currentRequest) {
-                                                                    objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-                                                                }
-                                                                
-                                                                if (error) {
-                                                                    [self downloadFailure:error withSessionTask:task];
-                                                                }
-                                                                else {
-                                                                    [self downloadSuccess:filePath withSessionTask:task];
-                                                                }
-                                                                
-                                                            }];
-        [request.currentURLSessionDownloadTask resume];
     }
     
 }
 
 
+#pragma mark - start download request
+- (void)addDownloadRequest:(BSDownloadRequest *)request {
+    NSString *requestURL = [BSNetworkPrivate buildRequestUrl:request];
+    BSRequestProgress progress = [request progressBlock];
+    BSDownloadDestinationBlock destination = [request downloadDestinationBlock];
+    
+    if (request.isDownloadTaskCompleted) {
+        [self downloadSuccess:request.downloadFilePath withRequest:request];
+        return;
+    }
+    
+    if (!request.isOpenResumeDownload) {
+        [self addDownloadWithRequest:request
+                          requestURL:requestURL
+                            progress:progress
+                         destination:destination];
+        return;
+    }
+    
+    NSData *resumeData = request.currentResumeData ?: [request getDownloadResumeData];
+    if (resumeData) {
+        
+        [self addDownloadWithRequest:request
+                          resumeData:resumeData
+                            progress:progress
+                         destination:destination];
+        
+    } else {
+        
+        [self addDownloadWithRequest:request
+                          requestURL:requestURL
+                            progress:progress
+                         destination:destination];
+        
+    }
+    
+    [self addDownloadWithRequestDelegate:request];
+    
+}
+
+- (void)addDownloadWithRequest:(BSDownloadRequest *)request
+                    requestURL:(NSString *)requestURL
+                      progress:(BSRequestProgress)progress
+                   destination:(BSDownloadDestinationBlock)destination {
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:_manager.baseURL]];
+    
+    request.currentURLSessionDownloadTask =
+    [_manager downloadTaskWithRequest:urlRequest
+                         progress:progress
+                      destination:destination
+                completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+                    
+                    NSURLSessionDownloadTask *task = [_manager.session downloadTaskWithRequest:urlRequest];
+                    [self pr_downloadRequest:request
+                                    filePath:filePath
+                                       error:error
+                                 sessionTask:task];
+                    
+                }];
+    [request.currentURLSessionDownloadTask resume];
+}
+
+- (void)addDownloadWithRequest:(BSDownloadRequest *)request
+                    resumeData:(NSData *)resumeData
+                      progress:(BSRequestProgress)progress
+                   destination:(BSDownloadDestinationBlock)destination {
+    request.currentURLSessionDownloadTask =
+    [_manager downloadTaskWithResumeData:resumeData
+                            progress:progress
+                         destination:destination
+                   completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+                       
+                       NSURLSessionDownloadTask *task = [_manager.session downloadTaskWithResumeData:resumeData];
+                       [self pr_downloadRequest:request
+                                       filePath:filePath
+                                          error:error
+                                    sessionTask:task];
+                   }];
+    [request.currentURLSessionDownloadTask resume];
+}
+
+- (void)addDownloadWithRequestDelegate:(BSDownloadRequest *)request {
+    __block float lastTotalWriten = request.lastTotalWriten;
+    [_manager setDownloadTaskDidWriteDataBlock:^(NSURLSession * _Nonnull session, NSURLSessionDownloadTask * _Nonnull downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
+        
+        if (totalBytesWritten - lastTotalWriten > totalBytesExpectedToWrite/10) {
+            request.lastTotalWriten = totalBytesWritten;
+            __weak typeof(request) weakRequest = request;
+            [request setDownloadTaskSuspend:^(NSData * _Nullable resumeData) {
+                __strong typeof(weakRequest) strongRequest = weakRequest;
+                if (resumeData) {
+                    strongRequest.currentURLSessionDownloadTask = [session downloadTaskWithResumeData:resumeData];
+                    strongRequest.currentResumeData = resumeData;
+                }
+            }];
+        }
+        
+    }];
+}
+
+
 #pragma mark - request callback analysis
+- (void)pr_successRequest:(BSRequest *)request
+                 response:(id)responseObject
+              sessionTask:(NSURLSessionDataTask *)task {
+    BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
+    if (!currentRequest) {
+        objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
+    [self requestSuccess:responseObject withSessionTask:task];
+}
+
+
+- (void)pr_failureRequest:(BSRequest *)request
+                    error:(NSError *)error
+              sessionTask:(NSURLSessionDataTask *)task {
+    BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
+    if (!currentRequest) {
+        objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
+    [self requestFailure:error withSessionTask:task];
+}
+
+
 - (void)requestSuccess:(id)responseObject withSessionTask:(NSURLSessionDataTask *)task {
     NSString *requestCode = _config.responseParams[REQUEST_CODE];
     
@@ -244,7 +314,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     @autoreleasepool {
         [request requestCompletePreprocessor];
     }
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         if (request.responseJOSNObject) {
             id response = [BSNetworkPrivate responseModel:request.responseJOSNObject request:request];
@@ -298,9 +368,39 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
 #pragma mark - download callback analysis
-- (void)downloadSuccess:(NSURL *)filePath withSessionTask:(NSURLSessionDownloadTask *)task {
-    BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
+- (void)pr_downloadRequest:(BSDownloadRequest *)request
+                  filePath:(NSURL *)filePath
+                     error:(NSError *)error
+               sessionTask:(NSURLSessionDownloadTask *)task {
     
+    BSRequest *currentRequest = objc_getAssociatedObject(task, &kBSRequestKey);
+    if (!currentRequest) {
+        objc_setAssociatedObject(task, &kBSRequestKey, request, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    
+    if (error) {
+        if (error.code == -999) {
+            [request start];
+        } else {
+            [self downloadFailure:error withSessionTask:task];
+        }
+    }
+    else {
+        [self downloadSuccess:filePath withSessionTask:task];
+    }
+    
+}
+
+
+- (void)downloadSuccess:(NSURL *)filePath withSessionTask:(NSURLSessionDownloadTask *)task {
+    BSDownloadRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
+    if (![request modifyContentWithName:filePath.lastPathComponent]) {
+        NSLog(@"修改信息失败");
+    }
+    [self downloadSuccess:filePath withRequest:request];
+}
+
+- (void)downloadSuccess:(NSURL *)filePath withRequest:(BSDownloadRequest *)request {
     ResponseModel *model = [[ResponseModel alloc] init];
     model.code = _config.successCodeStatus;
     model.message = @"download is success";
@@ -320,7 +420,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 - (void)downloadFailure:(NSError *)error withSessionTask:(NSURLSessionDownloadTask *)task {
     BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
-
+    
     request.error = error;
     ResponseModel *response =(ResponseModel *)[BSNetworkPrivate responseModel:error];
     request.responseModel = response;
@@ -333,7 +433,6 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
         [request clearCompletionBlock];
     });
 }
-
 
 
 @end

@@ -7,14 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+@class BSBasicsRequest;
 @class BSRequest;
+
 
 @interface BSNetworkPrivate : NSObject
 
-+ (NSString *)buildRequestUrl:(BSRequest *)request;
++ (NSString *)buildRequestUrl:(BSBasicsRequest *)request;
 
 
-+ (id)currentArgument:(BSRequest *)request;
++ (id)currentArgument:(BSBasicsRequest *)request;
 
 
 + (NSString *)md5StringFromString:(NSString *)string;

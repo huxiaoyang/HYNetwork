@@ -22,6 +22,8 @@
 		ED09F8521D1A365600F07389 /* BSNetworkConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */; };
 		ED09F8561D1A56AA00F07389 /* testRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8551D1A56AA00F07389 /* testRequest.m */; };
 		ED09F8591D1A56D500F07389 /* testModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8581D1A56D500F07389 /* testModel.m */; };
+		EDCE485B1E9DF15F00953AF7 /* BSDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCE485A1E9DF15F00953AF7 /* BSDownloadRequest.m */; };
+		EDCE485E1E9DF73400953AF7 /* TestDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCE485D1E9DF73400953AF7 /* TestDownloadRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,10 @@
 		ED09F8551D1A56AA00F07389 /* testRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testRequest.m; sourceTree = "<group>"; };
 		ED09F8571D1A56D500F07389 /* testModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testModel.h; sourceTree = "<group>"; };
 		ED09F8581D1A56D500F07389 /* testModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testModel.m; sourceTree = "<group>"; };
+		EDCE48591E9DF15F00953AF7 /* BSDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSDownloadRequest.h; sourceTree = "<group>"; };
+		EDCE485A1E9DF15F00953AF7 /* BSDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSDownloadRequest.m; sourceTree = "<group>"; };
+		EDCE485C1E9DF73400953AF7 /* TestDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestDownloadRequest.h; sourceTree = "<group>"; };
+		EDCE485D1E9DF73400953AF7 /* TestDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDownloadRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +120,8 @@
 				ED09F82F1D194AA700F07389 /* ViewController.m */,
 				ED09F8541D1A56AA00F07389 /* testRequest.h */,
 				ED09F8551D1A56AA00F07389 /* testRequest.m */,
+				EDCE485C1E9DF73400953AF7 /* TestDownloadRequest.h */,
+				EDCE485D1E9DF73400953AF7 /* TestDownloadRequest.m */,
 				ED09F8571D1A56D500F07389 /* testModel.h */,
 				ED09F8581D1A56D500F07389 /* testModel.m */,
 				ED09F8281D194AA700F07389 /* Supporting Files */,
@@ -161,6 +169,8 @@
 				ED016A831DDD542B0028AB0D /* BSCacheRequest.m */,
 				ED09F8491D1A365600F07389 /* BSRequest.h */,
 				ED09F84A1D1A365600F07389 /* BSRequest.m */,
+				EDCE48591E9DF15F00953AF7 /* BSDownloadRequest.h */,
+				EDCE485A1E9DF15F00953AF7 /* BSDownloadRequest.m */,
 				ED016A841DDD542B0028AB0D /* BSNetworkPrivate.h */,
 				ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */,
 				ED09F84B1D1A365600F07389 /* BSNetworkConfig.h */,
@@ -290,6 +300,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EDCE485E1E9DF73400953AF7 /* TestDownloadRequest.m in Sources */,
 				ED09F8301D194AA700F07389 /* ViewController.m in Sources */,
 				ED09F8521D1A365600F07389 /* BSNetworkConfig.m in Sources */,
 				ED09F8591D1A56D500F07389 /* testModel.m in Sources */,
@@ -297,6 +308,7 @@
 				ED09F8561D1A56AA00F07389 /* testRequest.m in Sources */,
 				ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */,
 				ED09F84F1D1A365600F07389 /* BSAPIClient.m in Sources */,
+				EDCE485B1E9DF15F00953AF7 /* BSDownloadRequest.m in Sources */,
 				ED016A871DDD542B0028AB0D /* BSNetworkPrivate.m in Sources */,
 				ED09F8511D1A365600F07389 /* BSRequest.m in Sources */,
 				ED09F8431D1A363200F07389 /* ResponseModel.m in Sources */,

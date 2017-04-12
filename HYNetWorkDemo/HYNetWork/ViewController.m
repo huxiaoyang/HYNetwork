@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "testRequest.h"
 #import "testModel.h"
+#import "TestDownloadRequest.h"
+
 
 
 @interface ViewController ()
@@ -21,6 +23,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+//    TestDownloadRequest *download = [[TestDownloadRequest alloc] init];
+//    [download startWithCompletionSuccess:^(__kindof BSDownloadRequest * _Nullable request) {
+//        NSLog(@"%@", request);
+//    } failure:^(__kindof BSDownloadRequest * _Nullable request) {
+//        NSLog(@"%@", request);
+//    }];
     
     _testRequest = [[testRequest alloc] init];
     [_testRequest startWithCompletionSuccess:^(__kindof BSRequest * _Nullable request) {

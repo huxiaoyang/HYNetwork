@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @protocol AFMultipartFormData;
+@class ResponseModel;
 
 
 FOUNDATION_EXPORT NSString *const _Nonnull BSRequestErrorDomain;
@@ -106,12 +107,6 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  */
 - (nullable BSConstructingBlock)constructingMultipartBlock;
 
-/**
- *  下载事件时重写该方法
- *
- *  @return Destination回调事件
- */
-- (nullable BSDownloadDestinationBlock)downloadDestinationBlock;
 
 /**
  *  网络请求进度
@@ -125,13 +120,9 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  */
 @property (nonatomic, strong, nullable) NSURLSessionDataTask *currentURLSessionDataTask;
 
-
 /**
- *  当前下载任务
+ *  当前任务状态
  */
-@property (nonatomic, strong, nullable) NSURLSessionDownloadTask *currentURLSessionDownloadTask;
-
-
 @property (nonatomic, assign) NSURLSessionTaskState taskState;
 
 /**
@@ -166,6 +157,18 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  *  返回json对象
  */
 @property (nonatomic, strong, nullable) id responseJOSNObject;
+
+/**
+ *  json解析后的Model
+ *  返回success时，jsonObject是NSDictionary类型
+ *  返回error时，ResponseModel是错误model，messge是错误信息
+ */
+@property (nonatomic, strong, nullable) ResponseModel *responseModel;
+
+/**
+ *  错误信息
+ */
+@property (nonatomic, strong, nullable) NSError *error;
 
 
 @end
