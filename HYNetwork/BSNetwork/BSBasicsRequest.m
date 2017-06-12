@@ -50,6 +50,7 @@ NSString *const BSRequestErrorDomain = @"com.XiaoYang.requestErrorDomain";
     return BSRequestMethodGet;
 }
 
+
 - (BSConstructingBlock)constructingMultipartBlock {
     if ([self requestMethod] == BSRequestMethodUpload) {
         NSAssert(NO, @"必须重写Multipart回调");
@@ -57,12 +58,6 @@ NSString *const BSRequestErrorDomain = @"com.XiaoYang.requestErrorDomain";
     return nil;
 }
 
-- (BSDownloadDestinationBlock)downloadDestinationBlock {
-    if ([self requestMethod] == BSRequestMethodDownload) {
-        NSAssert(NO, @"必须重写Destination回调");
-    }
-    return nil;
-}
 
 - (BSRequestProgress)progressBlock {
     return nil;
@@ -85,17 +80,20 @@ NSString *const BSRequestErrorDomain = @"com.XiaoYang.requestErrorDomain";
 }
 
 - (BOOL)isTaskRunning {
-    return self.currentURLSessionDataTask.state == NSURLSessionTaskStateRunning;
+    return self.currentURLSessionDataTask ? self.currentURLSessionDataTask.state == NSURLSessionTaskStateRunning : NO;
 }
 
 - (void)taskCancel {
     if ([self isTaskRunning]) {
         [self.currentURLSessionDataTask cancel];
+        return;
     }
 }
 
 - (NSURL *)currentCompleteURL {
     return self.currentURLSessionDataTask.currentRequest.URL;
 }
+
+
 
 @end

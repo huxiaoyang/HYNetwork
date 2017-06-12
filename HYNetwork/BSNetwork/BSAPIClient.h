@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class ResponseModel;
-@class BSRequest;
+@class BSBasicsRequest;
 
 
 extern NSString *const _Nonnull BSAPIClientRequestFailureNotification;
@@ -20,6 +20,7 @@ extern NSString *const _Nonnull BSAPIClientRequestFailureNotification;
 + (_Nullable instancetype)sharedClient;
 
 
-- (void)addRequest:(BSRequest * _Nullable)request;
+- (void)addRequest:(BSBasicsRequest * _Nullable)request;
+
 
 @end

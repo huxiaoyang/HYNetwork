@@ -58,7 +58,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 }
 
 // 设置http HeaderField
-- (AFHTTPRequestSerializer *)pr_setRequestSerializer:(BSRequest *)request {
+- (AFHTTPRequestSerializer *)pr_setRequestSerializer:(BSBasicsRequest *)request {
     switch (request.requestSerializerType) {
         case BSRequestSerializerTypeHTTP:
             return [AFHTTPRequestSerializer serializer];
@@ -69,7 +69,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     }
 }
 
-- (AFHTTPResponseSerializer *)pr_setResponseSerializer:(BSRequest *)request {
+- (AFHTTPResponseSerializer *)pr_setResponseSerializer:(BSBasicsRequest *)request {
     switch (request.responseSerializerType) {
         case BSResponseSerializerTypeHTTP:
             return [AFHTTPResponseSerializer serializer];
@@ -80,7 +80,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     }
 }
 
-- (void)setUpHTTPHeaderField:(BSRequest *)request {
+- (void)setUpHTTPHeaderField:(BSBasicsRequest *)request {
     if (request.requestHTTPHeaderField && [request.requestHTTPHeaderField count] != 0) {
         [request.requestHTTPHeaderField enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
             [_manager.requestSerializer setValue:obj forHTTPHeaderField:key];
@@ -91,14 +91,23 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 #pragma mark - start request
 
-- (void)addRequest:(BSRequest *)request {
-    
+- (void)addRequest:(BSBasicsRequest *)request {
     _manager.requestSerializer  = [self pr_setRequestSerializer:request];
     [self setUpHTTPHeaderField:request];
     _manager.responseSerializer = [self pr_setResponseSerializer:request];
     
     _manager.requestSerializer.timeoutInterval = [request requestTimeoutInterval];
     
+    if ([request isKindOfClass:[BSRequest class]]) {
+        [self pr_addRequest:(BSRequest *)request];
+    }
+    else if ([request isKindOfClass:[BSDownloadRequest  class]]){
+        [self pr_addDownloadRequest:(BSDownloadRequest *)request];
+    }
+}
+
+
+- (void)pr_addRequest:(BSRequest *)request {
     NSString *requestURL = [BSNetworkPrivate buildRequestUrl:request];
     
     BSRequestProgress progress = [request progressBlock];
@@ -162,7 +171,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
 #pragma mark - start download request
-- (void)addDownloadRequest:(BSDownloadRequest *)request {
+- (void)pr_addDownloadRequest:(BSDownloadRequest *)request {
     NSString *requestURL = [BSNetworkPrivate buildRequestUrl:request];
     BSRequestProgress progress = [request progressBlock];
     BSDownloadDestinationBlock destination = [request downloadDestinationBlock];
@@ -206,14 +215,20 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
                       progress:(BSRequestProgress)progress
                    destination:(BSDownloadDestinationBlock)destination {
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:_manager.baseURL]];
+    id parameters = [BSNetworkPrivate currentArgument:request];
+    NSError *error;
+    NSURLRequest *serializerRequest = [_manager.requestSerializer requestBySerializingRequest:urlRequest withParameters:parameters error:&error];
+    if (error) {
+        [BSNetworkPrivate throwExceptiont:@"request By Serializing Requesta failed, reason = %@", error];
+    }
     
     request.currentURLSessionDownloadTask =
-    [_manager downloadTaskWithRequest:urlRequest
+    [_manager downloadTaskWithRequest:serializerRequest
                          progress:progress
                       destination:destination
                 completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                     
-                    NSURLSessionDownloadTask *task = [_manager.session downloadTaskWithRequest:urlRequest];
+                    NSURLSessionDownloadTask *task = [_manager.session downloadTaskWithRequest:serializerRequest];
                     [self pr_downloadRequest:request
                                     filePath:filePath
                                        error:error

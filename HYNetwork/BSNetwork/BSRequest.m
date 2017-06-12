@@ -83,13 +83,20 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     __weak typeof(self) weakSelf = self;
     self.successCompletionBlock = ^(BSRequest *request) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        if ([strongSelf filterRequestCompletion:request]) {
+        if ([strongSelf filterSuccessRequestCompletion:request]) {
             success(request);
         }
     };
     
-//    self.successCompletionBlock = success;
-    self.failureCompletionBlock = failure;
+    self.failureCompletionBlock = ^(BSRequest *request) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if ([strongSelf filterFailureRequestCompletion:request]) {
+            failure(request);
+        }
+    };
+    
+    //    self.successCompletionBlock = success;
+    //    self.failureCompletionBlock = failure;
 }
 
 
@@ -109,7 +116,7 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     
 }
 
-#pragma mark - 
+#pragma mark -
 - (void)addRequest {
     [[BSAPIClient sharedClient] addRequest:self];
 }
@@ -149,10 +156,14 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     if (self.cacheJSON) {
         return [BSNetworkPrivate responseModel:self.cacheJSON request:self];
     }
-    return _responseModel;
+    return super.responseModel;
 }
 
-- (BOOL)filterRequestCompletion:(__kindof BSRequest *)request {
+- (BOOL)filterSuccessRequestCompletion:(__kindof BSRequest *)request {
+    return YES;
+}
+
+- (BOOL)filterFailureRequestCompletion:(__kindof BSRequest *)request {
     return YES;
 }
 

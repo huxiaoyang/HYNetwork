@@ -10,8 +10,10 @@
 #import "CommonCrypto/CommonDigest.h"
 #import "BSNetworkConfig.h"
 #import "ResponseModel.h"
+#import "BSBasicsRequest.h"
 #import "BSRequest.h"
 #import "YYModel.h"
+#import <UIKit/UIKit.h>
 
 
 @implementation BSNetworkPrivate
@@ -40,13 +42,13 @@
 
 
 // 设置http URL
-+ (NSString *)buildRequestUrl:(BSRequest *)request {
++ (NSString *)buildRequestUrl:(BSBasicsRequest *)request {
     NSString *detailUrl = [request requestUrl];
     if ([detailUrl hasPrefix:@"http"]) {
         return detailUrl;
     }
     BSNetworkConfig *config = [BSNetworkConfig sharedInstance];
-
+    
     NSString *requestUrl;
     if (config.baseURL && config.baseURL.length > 0) {
         requestUrl = [NSString stringWithFormat:@"%@%@", [config baseURL], detailUrl];
@@ -74,7 +76,7 @@
 #pragma mark - json to model
 + (id)responseModel:(id)responseObject request:(BSRequest *)request {
     BSNetworkConfig *config = [BSNetworkConfig sharedInstance];
-
+    
     NSString * requestData = config.responseParams[REQUEST_DATA];
     NSString * requestCode = config.responseParams[REQUEST_CODE];
     NSString * requestMsg  = config.responseParams[REQUEST_MESSAGE];
@@ -172,6 +174,9 @@
         case -1001: // 请求超时
             model.message = @"网络状态不好,请稍候再试";
             break;
+        case -999: // 主动取消网络请求操作，不需要toast，返回nil
+            model.message = nil;
+            break;
         default:
             model.message = @"网络问题，稍后再试";
             break;
@@ -180,5 +185,38 @@
     
     return model;
 }
+
+
+#pragma mark - Throw exceptiont
++ (void)throwExceptiont:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2) {
+#ifdef DEBUG
+    
+    va_list args;
+    va_start(args, format);
+    NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+    va_end(args);
+    
+    NSLog(@"%@", message);
+    
+    UIViewController *parentVC = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"我知道了"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                   }];
+    NSString *title = @"异常错误";
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:title
+                                                                     message:message
+                                                              preferredStyle:UIAlertControllerStyleAlert];
+    NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:title];
+    [hogan addAttribute:NSForegroundColorAttributeName
+                  value:[UIColor redColor]
+                  range:NSMakeRange(0, title.length)];
+    [alertVC setValue:hogan forKey:@"attributedTitle"];
+    [alertVC addAction:action];
+    [parentVC presentViewController:alertVC animated:YES completion:nil];
+#endif
+    
+}
+
 
 @end
