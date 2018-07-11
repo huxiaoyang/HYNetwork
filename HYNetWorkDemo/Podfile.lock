@@ -20,10 +20,15 @@ DEPENDENCIES:
   - AFNetworking (= 3.0.4)
   - YYModel (= 0.9.12)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AFNetworking
+    - YYModel
+
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
   YYModel: 33a27f41a995f4c36ff8178421bac9f221a9c7ea
 
 PODFILE CHECKSUM: dcbf6ce6e88993b0f4f41b48ae8ab9af89e5386a
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.5.3

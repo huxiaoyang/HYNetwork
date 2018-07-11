@@ -7,33 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		045C4E8C20F606A600BA6D1F /* BSAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E7B20F606A600BA6D1F /* BSAPIClient.m */; };
+		045C4E8D20F606A600BA6D1F /* BSCacheRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E7D20F606A600BA6D1F /* BSCacheRequest.m */; };
+		045C4E8E20F606A600BA6D1F /* BSNetworkConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8120F606A600BA6D1F /* BSNetworkConfig.m */; };
+		045C4E8F20F606A600BA6D1F /* BSBasicsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8220F606A600BA6D1F /* BSBasicsRequest.m */; };
+		045C4E9020F606A600BA6D1F /* BSNetworkPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8320F606A600BA6D1F /* BSNetworkPrivate.m */; };
+		045C4E9120F606A600BA6D1F /* BSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8720F606A600BA6D1F /* BSRequest.m */; };
+		045C4E9220F606A600BA6D1F /* BSDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8820F606A600BA6D1F /* BSDownloadRequest.m */; };
+		045C4E9320F606A600BA6D1F /* ResponseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8B20F606A600BA6D1F /* ResponseModel.m */; };
 		E14C0DF5ECFBA1BA3D195CE7 /* libPods-HYNetWork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */; };
-		ED016A861DDD542B0028AB0D /* BSCacheRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED016A831DDD542B0028AB0D /* BSCacheRequest.m */; };
-		ED016A871DDD542B0028AB0D /* BSNetworkPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */; };
 		ED09F82A1D194AA700F07389 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8291D194AA700F07389 /* main.m */; };
 		ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F82C1D194AA700F07389 /* AppDelegate.m */; };
 		ED09F8301D194AA700F07389 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F82F1D194AA700F07389 /* ViewController.m */; };
 		ED09F8351D194AA700F07389 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED09F8341D194AA700F07389 /* Assets.xcassets */; };
 		ED09F8381D194AA700F07389 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED09F8361D194AA700F07389 /* LaunchScreen.storyboard */; };
-		ED09F8431D1A363200F07389 /* ResponseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8421D1A363200F07389 /* ResponseModel.m */; };
-		ED09F84F1D1A365600F07389 /* BSAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8461D1A365600F07389 /* BSAPIClient.m */; };
-		ED09F8501D1A365600F07389 /* BSBasicsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8481D1A365600F07389 /* BSBasicsRequest.m */; };
-		ED09F8511D1A365600F07389 /* BSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F84A1D1A365600F07389 /* BSRequest.m */; };
-		ED09F8521D1A365600F07389 /* BSNetworkConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */; };
 		ED09F8561D1A56AA00F07389 /* testRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8551D1A56AA00F07389 /* testRequest.m */; };
 		ED09F8591D1A56D500F07389 /* testModel.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8581D1A56D500F07389 /* testModel.m */; };
-		EDCE485B1E9DF15F00953AF7 /* BSDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCE485A1E9DF15F00953AF7 /* BSDownloadRequest.m */; };
 		EDCE485E1E9DF73400953AF7 /* TestDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = EDCE485D1E9DF73400953AF7 /* TestDownloadRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		045C4E7B20F606A600BA6D1F /* BSAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSAPIClient.m; sourceTree = "<group>"; };
+		045C4E7C20F606A600BA6D1F /* BSNetworkPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkPrivate.h; sourceTree = "<group>"; };
+		045C4E7D20F606A600BA6D1F /* BSCacheRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCacheRequest.m; sourceTree = "<group>"; };
+		045C4E7E20F606A600BA6D1F /* BSBasicsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBasicsRequest.h; sourceTree = "<group>"; };
+		045C4E7F20F606A600BA6D1F /* BSDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSDownloadRequest.h; sourceTree = "<group>"; };
+		045C4E8020F606A600BA6D1F /* BSRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSRequest.h; sourceTree = "<group>"; };
+		045C4E8120F606A600BA6D1F /* BSNetworkConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSNetworkConfig.m; sourceTree = "<group>"; };
+		045C4E8220F606A600BA6D1F /* BSBasicsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBasicsRequest.m; sourceTree = "<group>"; };
+		045C4E8320F606A600BA6D1F /* BSNetworkPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSNetworkPrivate.m; sourceTree = "<group>"; };
+		045C4E8420F606A600BA6D1F /* BSCacheRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCacheRequest.h; sourceTree = "<group>"; };
+		045C4E8520F606A600BA6D1F /* BSAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSAPIClient.h; sourceTree = "<group>"; };
+		045C4E8620F606A600BA6D1F /* BSNetworkConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkConfig.h; sourceTree = "<group>"; };
+		045C4E8720F606A600BA6D1F /* BSRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSRequest.m; sourceTree = "<group>"; };
+		045C4E8820F606A600BA6D1F /* BSDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSDownloadRequest.m; sourceTree = "<group>"; };
+		045C4E8A20F606A600BA6D1F /* ResponseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseModel.h; sourceTree = "<group>"; };
+		045C4E8B20F606A600BA6D1F /* ResponseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseModel.m; sourceTree = "<group>"; };
 		A2294A5D113268C727CBA5A8 /* Pods-HYNetWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HYNetWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork.debug.xcconfig"; sourceTree = "<group>"; };
 		DF13DC9C18140B914D432CD9 /* Pods-HYNetWork.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HYNetWork.release.xcconfig"; path = "Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork.release.xcconfig"; sourceTree = "<group>"; };
 		E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HYNetWork.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		ED016A821DDD542B0028AB0D /* BSCacheRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCacheRequest.h; sourceTree = "<group>"; };
-		ED016A831DDD542B0028AB0D /* BSCacheRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCacheRequest.m; sourceTree = "<group>"; };
-		ED016A841DDD542B0028AB0D /* BSNetworkPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkPrivate.h; sourceTree = "<group>"; };
-		ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSNetworkPrivate.m; sourceTree = "<group>"; };
 		ED09F8251D194AA700F07389 /* HYNetWork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HYNetWork.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED09F8291D194AA700F07389 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ED09F82B1D194AA700F07389 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -43,22 +55,10 @@
 		ED09F8341D194AA700F07389 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED09F8371D194AA700F07389 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED09F8391D194AA700F07389 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ED09F8411D1A363200F07389 /* ResponseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseModel.h; sourceTree = "<group>"; };
-		ED09F8421D1A363200F07389 /* ResponseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseModel.m; sourceTree = "<group>"; };
-		ED09F8451D1A365600F07389 /* BSAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSAPIClient.h; sourceTree = "<group>"; };
-		ED09F8461D1A365600F07389 /* BSAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSAPIClient.m; sourceTree = "<group>"; };
-		ED09F8471D1A365600F07389 /* BSBasicsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBasicsRequest.h; sourceTree = "<group>"; };
-		ED09F8481D1A365600F07389 /* BSBasicsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBasicsRequest.m; sourceTree = "<group>"; };
-		ED09F8491D1A365600F07389 /* BSRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSRequest.h; sourceTree = "<group>"; };
-		ED09F84A1D1A365600F07389 /* BSRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSRequest.m; sourceTree = "<group>"; };
-		ED09F84B1D1A365600F07389 /* BSNetworkConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSNetworkConfig.h; sourceTree = "<group>"; };
-		ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSNetworkConfig.m; sourceTree = "<group>"; };
 		ED09F8541D1A56AA00F07389 /* testRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testRequest.h; sourceTree = "<group>"; };
 		ED09F8551D1A56AA00F07389 /* testRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testRequest.m; sourceTree = "<group>"; };
 		ED09F8571D1A56D500F07389 /* testModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testModel.h; sourceTree = "<group>"; };
 		ED09F8581D1A56D500F07389 /* testModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testModel.m; sourceTree = "<group>"; };
-		EDCE48591E9DF15F00953AF7 /* BSDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSDownloadRequest.h; sourceTree = "<group>"; };
-		EDCE485A1E9DF15F00953AF7 /* BSDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSDownloadRequest.m; sourceTree = "<group>"; };
 		EDCE485C1E9DF73400953AF7 /* TestDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestDownloadRequest.h; sourceTree = "<group>"; };
 		EDCE485D1E9DF73400953AF7 /* TestDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestDownloadRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,6 +75,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		045C4E7920F606A600BA6D1F /* HYNetwork */ = {
+			isa = PBXGroup;
+			children = (
+				045C4E7A20F606A600BA6D1F /* BSNetwork */,
+				045C4E8920F606A600BA6D1F /* BSModel */,
+			);
+			name = HYNetwork;
+			path = ../HYNetwork;
+			sourceTree = "<group>";
+		};
+		045C4E7A20F606A600BA6D1F /* BSNetwork */ = {
+			isa = PBXGroup;
+			children = (
+				045C4E7B20F606A600BA6D1F /* BSAPIClient.m */,
+				045C4E7C20F606A600BA6D1F /* BSNetworkPrivate.h */,
+				045C4E7D20F606A600BA6D1F /* BSCacheRequest.m */,
+				045C4E7E20F606A600BA6D1F /* BSBasicsRequest.h */,
+				045C4E7F20F606A600BA6D1F /* BSDownloadRequest.h */,
+				045C4E8020F606A600BA6D1F /* BSRequest.h */,
+				045C4E8120F606A600BA6D1F /* BSNetworkConfig.m */,
+				045C4E8220F606A600BA6D1F /* BSBasicsRequest.m */,
+				045C4E8320F606A600BA6D1F /* BSNetworkPrivate.m */,
+				045C4E8420F606A600BA6D1F /* BSCacheRequest.h */,
+				045C4E8520F606A600BA6D1F /* BSAPIClient.h */,
+				045C4E8620F606A600BA6D1F /* BSNetworkConfig.h */,
+				045C4E8720F606A600BA6D1F /* BSRequest.m */,
+				045C4E8820F606A600BA6D1F /* BSDownloadRequest.m */,
+			);
+			path = BSNetwork;
+			sourceTree = "<group>";
+		};
+		045C4E8920F606A600BA6D1F /* BSModel */ = {
+			isa = PBXGroup;
+			children = (
+				045C4E8A20F606A600BA6D1F /* ResponseModel.h */,
+				045C4E8B20F606A600BA6D1F /* ResponseModel.m */,
+			);
+			path = BSModel;
+			sourceTree = "<group>";
+		};
 		93C466C7EE48536DE578BE3B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -95,7 +135,7 @@
 		ED09F81C1D194AA700F07389 = {
 			isa = PBXGroup;
 			children = (
-				ED09F83F1D19562800F07389 /* Classes */,
+				045C4E7920F606A600BA6D1F /* HYNetwork */,
 				ED09F8271D194AA700F07389 /* HYNetWork */,
 				ED09F8261D194AA700F07389 /* Products */,
 				D9FAFC90FDC55AEA70E95D98 /* Pods */,
@@ -140,45 +180,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		ED09F83F1D19562800F07389 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				ED09F8401D1A361900F07389 /* BSModel */,
-				ED09F8441D1A363700F07389 /* BSNetwork */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
-		ED09F8401D1A361900F07389 /* BSModel */ = {
-			isa = PBXGroup;
-			children = (
-				ED09F8411D1A363200F07389 /* ResponseModel.h */,
-				ED09F8421D1A363200F07389 /* ResponseModel.m */,
-			);
-			path = BSModel;
-			sourceTree = "<group>";
-		};
-		ED09F8441D1A363700F07389 /* BSNetwork */ = {
-			isa = PBXGroup;
-			children = (
-				ED09F8451D1A365600F07389 /* BSAPIClient.h */,
-				ED09F8461D1A365600F07389 /* BSAPIClient.m */,
-				ED09F8471D1A365600F07389 /* BSBasicsRequest.h */,
-				ED09F8481D1A365600F07389 /* BSBasicsRequest.m */,
-				ED016A821DDD542B0028AB0D /* BSCacheRequest.h */,
-				ED016A831DDD542B0028AB0D /* BSCacheRequest.m */,
-				ED09F8491D1A365600F07389 /* BSRequest.h */,
-				ED09F84A1D1A365600F07389 /* BSRequest.m */,
-				EDCE48591E9DF15F00953AF7 /* BSDownloadRequest.h */,
-				EDCE485A1E9DF15F00953AF7 /* BSDownloadRequest.m */,
-				ED016A841DDD542B0028AB0D /* BSNetworkPrivate.h */,
-				ED016A851DDD542B0028AB0D /* BSNetworkPrivate.m */,
-				ED09F84B1D1A365600F07389 /* BSNetworkConfig.h */,
-				ED09F84C1D1A365600F07389 /* BSNetworkConfig.m */,
-			);
-			path = BSNetwork;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -190,8 +191,6 @@
 				ED09F8211D194AA700F07389 /* Sources */,
 				ED09F8221D194AA700F07389 /* Frameworks */,
 				ED09F8231D194AA700F07389 /* Resources */,
-				84B06D9A2CDDA217A9B73C9A /* [CP] Embed Pods Frameworks */,
-				751EE99EB1837DEBABFE115C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -254,43 +253,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HYNetWork-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		751EE99EB1837DEBABFE115C /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		84B06D9A2CDDA217A9B73C9A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -300,19 +272,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				045C4E9320F606A600BA6D1F /* ResponseModel.m in Sources */,
 				EDCE485E1E9DF73400953AF7 /* TestDownloadRequest.m in Sources */,
 				ED09F8301D194AA700F07389 /* ViewController.m in Sources */,
-				ED09F8521D1A365600F07389 /* BSNetworkConfig.m in Sources */,
 				ED09F8591D1A56D500F07389 /* testModel.m in Sources */,
-				ED09F8501D1A365600F07389 /* BSBasicsRequest.m in Sources */,
+				045C4E8F20F606A600BA6D1F /* BSBasicsRequest.m in Sources */,
+				045C4E8C20F606A600BA6D1F /* BSAPIClient.m in Sources */,
 				ED09F8561D1A56AA00F07389 /* testRequest.m in Sources */,
+				045C4E8D20F606A600BA6D1F /* BSCacheRequest.m in Sources */,
+				045C4E9220F606A600BA6D1F /* BSDownloadRequest.m in Sources */,
+				045C4E9020F606A600BA6D1F /* BSNetworkPrivate.m in Sources */,
+				045C4E9120F606A600BA6D1F /* BSRequest.m in Sources */,
 				ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */,
-				ED09F84F1D1A365600F07389 /* BSAPIClient.m in Sources */,
-				EDCE485B1E9DF15F00953AF7 /* BSDownloadRequest.m in Sources */,
-				ED016A871DDD542B0028AB0D /* BSNetworkPrivate.m in Sources */,
-				ED09F8511D1A365600F07389 /* BSRequest.m in Sources */,
-				ED09F8431D1A363200F07389 /* ResponseModel.m in Sources */,
-				ED016A861DDD542B0028AB0D /* BSCacheRequest.m in Sources */,
+				045C4E8E20F606A600BA6D1F /* BSNetworkConfig.m in Sources */,
 				ED09F82A1D194AA700F07389 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

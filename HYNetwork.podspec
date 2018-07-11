@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name         = 'HYNetwork'
   s.summary      = 'A simple network is based on AFNetwork.'
-  s.version      = '1.3.2'
+  s.version      = '1.5.0'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   s.authors      = { 'huxiaoyang' => 'yohuyang@gmail.com' }
   s.homepage     = 'https://github.com/huxiaoyang/HYNetwork'
@@ -15,7 +15,9 @@ Pod::Spec.new do |s|
   s.frameworks = 'UIKit', 'QuartzCore', 'Foundation'
   s.module_name = 'HYNetwork'
 
-  s.dependency "AFNetworking", "~> 3.0.4"
-  s.dependency "YYModel", "~> 0.9.12"
+  s.dependency "AFNetworking"
+  s.dependency "YYModel"
+  s.dependency "libextobjc"
+
 
 end
