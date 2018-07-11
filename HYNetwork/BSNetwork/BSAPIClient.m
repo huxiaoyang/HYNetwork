@@ -29,9 +29,14 @@ NSString *const BSAPIClientRequestFailureNotification = @"com.XiaoYang.BSAPIClie
 static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
+@interface BSAPIClient ()
+
+@property (nonatomic, strong) AFHTTPSessionManager *manager;
+
+@end
+
 
 @implementation BSAPIClient {
-    AFHTTPSessionManager *_manager;
     BSNetworkConfig *_config;
 }
 
@@ -49,45 +54,113 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _manager = [AFHTTPSessionManager manager];
         _config = [BSNetworkConfig sharedInstance];
+        _manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:_config.baseURL]];
         _manager.securityPolicy = _config.securityPolicy;
         [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+        if (_config.secretCodeWithP12) [self testAndVerifyP12];
     }
     return self;
 }
 
-// 设置http HeaderField
+
 - (AFHTTPRequestSerializer *)pr_setRequestSerializer:(BSBasicsRequest *)request {
     switch (request.requestSerializerType) {
         case BSRequestSerializerTypeHTTP:
-            return [AFHTTPRequestSerializer serializer];
-            break;
+            return request.requestSerializer ?: [AFHTTPRequestSerializer serializer];
         case BSRequestSerializerTypeJSON:
-            return [AFJSONRequestSerializer serializer];
-            break;
+            return request.requestSerializer ?: [AFJSONRequestSerializer serializer];
     }
 }
 
 - (AFHTTPResponseSerializer *)pr_setResponseSerializer:(BSBasicsRequest *)request {
     switch (request.responseSerializerType) {
         case BSResponseSerializerTypeHTTP:
-            return [AFHTTPResponseSerializer serializer];
-            break;
+            return request.responseSerializer ?: [AFHTTPResponseSerializer serializer];
         case BSResponseSerializerTypeJSON:
-            return [AFJSONResponseSerializer serializer];
-            break;
+            return request.responseSerializer ?: [AFJSONResponseSerializer serializer];
     }
 }
 
 - (void)setUpHTTPHeaderField:(BSBasicsRequest *)request {
-    if (request.requestHTTPHeaderField && [request.requestHTTPHeaderField count] != 0) {
-        [request.requestHTTPHeaderField enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            [_manager.requestSerializer setValue:obj forHTTPHeaderField:key];
-        }];
-    }
+    if (!request.requestHTTPHeaderField || [request.requestHTTPHeaderField count] == 0) return;
+    [request.requestHTTPHeaderField enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        [_manager.requestSerializer setValue:obj forHTTPHeaderField:key];
+    }];
 }
 
+- (void)testAndVerifyP12 {
+    
+    __weak typeof(self)weakSelf = self;
+    
+    [_manager setSessionDidReceiveAuthenticationChallengeBlock:^NSURLSessionAuthChallengeDisposition(NSURLSession*session, NSURLAuthenticationChallenge *challenge, NSURLCredential *__autoreleasing*_credential) {
+        
+        NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+        __autoreleasing NSURLCredential *credential =nil;
+        
+        if([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+           
+            if([weakSelf.manager.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+                
+                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+                if(credential) {
+                    disposition =NSURLSessionAuthChallengeUseCredential;
+                } else {
+                    disposition =NSURLSessionAuthChallengePerformDefaultHandling;
+                }
+                
+            } else {
+                
+                disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+            
+            }
+            
+        } else {
+            // client authentication
+            SecIdentityRef identity = NULL;
+            SecTrustRef trust = NULL;
+            NSBundle *bundle = [NSBundle bundleForClass:[weakSelf class]];
+            NSArray *paths = [bundle pathsForResourcesOfType:@"p12" inDirectory:@"."];
+            if (!paths || !paths.count || paths.count > 1) {
+                
+                [BSNetworkPrivate throwExceptiont:@"请检查mianBundle中是否有切只有一个p12文件"];
+                
+            } else {
+                
+                NSString *p12 = paths.firstObject;
+                NSFileManager *fileManager =[NSFileManager defaultManager];
+                
+                if(![fileManager fileExistsAtPath:p12]) {
+                    
+                    NSLog(@"client.p12:not exist");
+                    
+                } else {
+                    
+                    NSData *PKCS12Data = [NSData dataWithContentsOfFile:p12];
+                    
+                    if ([BSNetworkPrivate extractIdentity:&identity andTrust:&trust fromPKCS12Data:PKCS12Data]) {
+                        
+                        SecCertificateRef certificate = NULL;
+                        SecIdentityCopyCertificate(identity, &certificate);
+                        const void*certs[] = {certificate};
+                        CFArrayRef certArray =CFArrayCreate(kCFAllocatorDefault, certs,1,NULL);
+                        credential =[NSURLCredential credentialWithIdentity:identity certificates:(__bridge  NSArray*)certArray persistence:NSURLCredentialPersistencePermanent];
+                        disposition =NSURLSessionAuthChallengeUseCredential;
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+        *_credential = credential;
+        return disposition;
+        
+    }];
+    
+}
 
 #pragma mark - start request
 
@@ -112,8 +185,13 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     BSRequestProgress progress = [request progressBlock];
     
+    id parameters = [BSNetworkPrivate currentArgument:request];
+
+    if (_config.parametersFilter) {
+        parameters = [_config.parametersFilter filterParameter:parameters request:request];
+    }
+    
     if ([request requestMethod] == BSRequestMethodGet) {
-        id parameters = [BSNetworkPrivate currentArgument:request];
         request.currentURLSessionDataTask = [_manager GET:requestURL
                                            parameters:parameters
                                              progress:progress
@@ -130,7 +208,6 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
         
     }
     else if ([request requestMethod] == BSRequestMethodPost) {
-        id parameters = [BSNetworkPrivate currentArgument:request];
         
         request.currentURLSessionDataTask = [_manager POST:requestURL
                                             parameters:parameters
@@ -148,7 +225,6 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
         
     }
     else if ([request requestMethod] == BSRequestMethodUpload) {
-        id parameters = [BSNetworkPrivate currentArgument:request];
         
         BSConstructingBlock constructingBlock = [request constructingMultipartBlock];
         request.currentURLSessionDataTask = [_manager POST:requestURL
@@ -214,8 +290,15 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
                     requestURL:(NSString *)requestURL
                       progress:(BSRequestProgress)progress
                    destination:(BSDownloadDestinationBlock)destination {
+    
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:_manager.baseURL]];
+    
     id parameters = [BSNetworkPrivate currentArgument:request];
+    
+    if (_config.parametersFilter) {
+        parameters = [_config.parametersFilter filterParameter:parameters request:request];
+    }
+    
     NSError *error;
     NSURLRequest *serializerRequest = [_manager.requestSerializer requestBySerializingRequest:urlRequest withParameters:parameters error:&error];
     if (error) {
@@ -332,7 +415,8 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (request.responseJOSNObject) {
-            id response = [BSNetworkPrivate responseModel:request.responseJOSNObject request:request];
+            id response = [_config.fetchResponseModelFilter responseModel:request.responseJOSNObject request:request];
+//            [BSNetworkPrivate responseModel:request.responseJOSNObject request:request];
             if ([response isKindOfClass:[ResponseModel class]]) {
                 request.responseModel = (ResponseModel *)response;
             } else {
@@ -366,7 +450,8 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     if (!request) return;
     
     request.error = error;
-    ResponseModel *response =(ResponseModel *)[BSNetworkPrivate responseModel:error];
+    ResponseModel *response =(ResponseModel *)[_config.fetchResponseModelFilter responseModel:error];
+//    [BSNetworkPrivate responseModel:error];
     request.responseModel = response;
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -437,7 +522,8 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
     
     request.error = error;
-    ResponseModel *response =(ResponseModel *)[BSNetworkPrivate responseModel:error];
+    ResponseModel *response =(ResponseModel *)[_config.fetchResponseModelFilter responseModel:error];
+//    [BSNetworkPrivate responseModel:error];
     request.responseModel = response;
     
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -71,8 +71,16 @@ NSString *const BSRequestErrorDomain = @"com.XiaoYang.requestErrorDomain";
     return BSRequestSerializerTypeHTTP;
 }
 
+- (AFHTTPRequestSerializer *)requestSerializer {
+    return nil;
+}
+
 - (BSResponseSerializerType)responseSerializerType {
     return BSResponseSerializerTypeJSON;
+}
+
+- (AFHTTPResponseSerializer *)responseSerializer {
+    return nil;
 }
 
 - (NSURLSessionTaskState)taskState {

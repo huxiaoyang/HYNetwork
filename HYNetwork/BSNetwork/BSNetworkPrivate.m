@@ -60,132 +60,42 @@
     if(string == nil || [string length] == 0)
         return nil;
     
-    const char *value = [string UTF8String];
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     
-    unsigned char outputBuffer[CC_MD5_DIGEST_LENGTH];
-    CC_MD5(value, (CC_LONG)strlen(value), outputBuffer);
-    
-    NSMutableString *outputString = [[NSMutableString alloc] initWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
-    for(NSInteger count = 0; count < CC_MD5_DIGEST_LENGTH; count++){
-        [outputString appendFormat:@"%02x",outputBuffer[count]];
-    }
-    
-    return outputString;
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(data.bytes, (CC_LONG)data.length, result);
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
 }
 
-#pragma mark - json to model
-+ (id)responseModel:(id)responseObject request:(BSRequest *)request {
-    BSNetworkConfig *config = [BSNetworkConfig sharedInstance];
++ (BOOL)extractIdentity:(SecIdentityRef*)outIdentity andTrust:(SecTrustRef *)outTrust fromPKCS12Data:(NSData *)inPKCS12Data {
+    OSStatus securityError = errSecSuccess;
+    //client certificate password
+    NSDictionary*optionsDictionary = [NSDictionary dictionaryWithObject:[BSNetworkConfig sharedInstance].secretCodeWithP12
+                                                                 forKey:(__bridge id)kSecImportExportPassphrase];
     
-    NSString * requestData = config.responseParams[REQUEST_DATA];
-    NSString * requestCode = config.responseParams[REQUEST_CODE];
-    NSString * requestMsg  = config.responseParams[REQUEST_MESSAGE];
-    NSString * requestTime = config.responseParams[REQUEST_TIME];
+    CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
+    securityError = SecPKCS12Import((__bridge CFDataRef)inPKCS12Data,(__bridge CFDictionaryRef)optionsDictionary,&items);
     
-    
-    if ([responseObject isKindOfClass:[NSArray class]]) {
-        ResponseModel *model = [[ResponseModel alloc] init];
-        model.code = config.successCodeStatus;
-        model.message = @"request is success";
-        model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-        model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseObject];
-        return model;
+    if(securityError == 0) {
+        CFDictionaryRef myIdentityAndTrust =CFArrayGetValueAtIndex(items,0);
+        const void*tempIdentity =NULL;
+        tempIdentity= CFDictionaryGetValue (myIdentityAndTrust,kSecImportItemIdentity);
+        *outIdentity = (SecIdentityRef)tempIdentity;
+        const void*tempTrust =NULL;
+        tempTrust = CFDictionaryGetValue(myIdentityAndTrust,kSecImportItemTrust);
+        *outTrust = (SecTrustRef)tempTrust;
+    } else {
+        NSLog(@"Failedwith error code %d",(int)securityError);
+        return NO;
     }
-    
-    if ([responseObject isKindOfClass:[NSDictionary class]]) {
-        
-        ResponseModel *model = [[ResponseModel alloc] init];
-        
-        if (![[responseObject allKeys] containsObject:requestData] && ![[responseObject allKeys] containsObject:requestCode]) {
-            model.code = config.successCodeStatus;
-            model.message = @"request is success";
-            model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-            model.data = [NSDictionary yy_modelDictionaryWithClass:[request modelClass] json:responseObject];
-            return model;
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestCode]) {
-            model.code = responseObject[requestCode];
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestMsg]) {
-            model.message = responseObject[requestMsg];
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestTime]) {
-            model.timestamp = responseObject[requestTime];
-        }
-        
-        if (![[responseObject allKeys] containsObject:requestData]) {
-            model.data = nil;
-            return model;
-        }
-        
-        if (![responseObject[requestData] isKindOfClass:[NSDictionary class]] && ![responseObject[requestData] isKindOfClass:[NSArray class]]) {
-            model.data = responseObject[requestData];
-            return model;
-        }
-        
-        if ([responseObject[requestData] count] == 0 || [responseObject[requestData] isEqual:[NSNull null]]) {
-            model.data = nil;
-            return model;
-        }
-        
-        if ([responseObject[requestData] isKindOfClass:[NSArray class]]) {
-            
-            NSArray *items = responseObject[requestData];
-            if (items.count == 0) {
-                model.data = items;
-                return model;
-            }
-            
-            if (![[items firstObject] isKindOfClass:[NSDictionary class]]) {
-                model.data = items;
-                return model;
-            }
-            
-            model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseObject[requestData]];
-            return model;
-        }
-        
-        if ([responseObject[requestData] isKindOfClass:[NSDictionary class]]) {
-            model.data = [[request modelClass] yy_modelWithJSON:responseObject[requestData]];
-            return model;
-        }
-        
-        return model;
-    }
-    
-    return nil;
+    return YES;
 }
-
-
-+ (id)responseModel:(NSError *)error {
-    ResponseModel *model = [[ResponseModel alloc] init];
-    model.code = @(error.code);
-    model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-#ifdef DEBUG
-    model.message = error.localizedDescription;
-#else
-    switch (error.code) {
-        case -1009: // 没有网络
-            model.message = @"失去网络链接,请检查您的网络设置!";
-            break;
-        case -1001: // 请求超时
-            model.message = @"网络状态不好,请稍候再试";
-            break;
-        case -999: // 主动取消网络请求操作，不需要toast，返回nil
-            model.message = nil;
-            break;
-        default:
-            model.message = @"网络问题，稍后再试";
-            break;
-    }
-#endif
-    
-    return model;
-}
-
 
 #pragma mark - Throw exceptiont
 + (void)throwExceptiont:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2) {

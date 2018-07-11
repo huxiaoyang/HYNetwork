@@ -10,6 +10,7 @@
 #import "BSAPIClient.h"
 #import "BSNetworkPrivate.h"
 #import "ResponseModel.h"
+#import "BSNetworkConfig.h"
 
 
 #ifndef NSFoundationVersionNumber_iOS_8_0
@@ -84,14 +85,14 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     self.successCompletionBlock = ^(BSRequest *request) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if ([strongSelf filterSuccessRequestCompletion:request]) {
-            success(request);
+            if (success) success(request);
         }
     };
     
     self.failureCompletionBlock = ^(BSRequest *request) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if ([strongSelf filterFailureRequestCompletion:request]) {
-            failure(request);
+            if (failure) failure(request);
         }
     };
     
@@ -154,7 +155,8 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
 
 - (ResponseModel *)responseModel {
     if (self.cacheJSON) {
-        return [BSNetworkPrivate responseModel:self.cacheJSON request:self];
+        return [[BSNetworkConfig sharedInstance].fetchResponseModelFilter responseModel:self.cacheJSON request:self];
+//        [BSNetworkPrivate responseModel:self.cacheJSON request:self];
     }
     return super.responseModel;
 }

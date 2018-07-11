@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 @protocol AFMultipartFormData;
+@class AFHTTPRequestSerializer;
+@class AFHTTPResponseSerializer;
 @class ResponseModel;
 
 
@@ -93,11 +95,14 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  *  @return 请求类型
  */
 - (BSRequestSerializerType)requestSerializerType;
+- (AFHTTPRequestSerializer *)requestSerializer;
+
 
 /**
  *  @return 返回类型
  */
 - (BSResponseSerializerType)responseSerializerType;
+- (AFHTTPResponseSerializer *)responseSerializer;
 
 
 /**

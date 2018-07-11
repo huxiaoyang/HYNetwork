@@ -22,10 +22,8 @@
 + (NSString *)md5StringFromString:(NSString *)string;
 
 
-#pragma mark JSON TO Model
-+ (id)responseModel:(id)responseObject request:(BSRequest *)request;
++ (BOOL)extractIdentity:(SecIdentityRef*)outIdentity andTrust:(SecTrustRef *)outTrust fromPKCS12Data:(NSData *)inPKCS12Data;
 
-+ (id)responseModel:(NSError *)error;
 
 #pragma mark - Throw exceptiont
 + (void)throwExceptiont:(NSString *)format, ... NS_FORMAT_FUNCTION(1,2);
