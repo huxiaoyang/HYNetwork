@@ -18,29 +18,6 @@
 
 @implementation BSNetworkPrivate
 
-// 设置http 请求参数
-+ (id)currentArgument:(BSRequest *)request {
-    
-    if (![request globalArgument] || [[request globalArgument] count] == 0) {
-        
-        id argument = [request requestArgument];
-        return argument;
-        
-    } else {
-        
-        id argument = [request globalArgument];
-        
-        NSMutableDictionary *mutableArgument = [argument mutableCopy];
-        NSDictionary *dict = (NSDictionary *)[request requestArgument];
-        if (dict.count > 0) {
-            [mutableArgument addEntriesFromDictionary:dict];
-        }
-        
-        return mutableArgument;
-    }
-}
-
-
 // 设置http URL
 + (NSString *)buildRequestUrl:(BSBasicsRequest *)request {
     NSString *detailUrl = [request requestUrl];

@@ -164,19 +164,14 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 #pragma mark - start request
 
-- (void)addRequest:(BSBasicsRequest *)request {
+- (void)addRequest:(BSRequest *)request {
     _manager.requestSerializer  = [self pr_setRequestSerializer:request];
     [self setUpHTTPHeaderField:request];
     _manager.responseSerializer = [self pr_setResponseSerializer:request];
     
     _manager.requestSerializer.timeoutInterval = [request requestTimeoutInterval];
     
-    if ([request isKindOfClass:[BSRequest class]]) {
-        [self pr_addRequest:(BSRequest *)request];
-    }
-    else if ([request isKindOfClass:[BSDownloadRequest  class]]){
-        [self pr_addDownloadRequest:(BSDownloadRequest *)request];
-    }
+    [self pr_addRequest:(BSRequest *)request];
 }
 
 
@@ -185,7 +180,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     BSRequestProgress progress = [request progressBlock];
     
-    id parameters = [BSNetworkPrivate currentArgument:request];
+    id parameters = request.requestArgument;
 
     if (_config.parametersFilter) {
         parameters = [_config.parametersFilter filterParameter:parameters request:request];
@@ -242,58 +237,56 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
                                                    
                                                }];
     }
+    else if ([request requestMethod] == BSRequestMethodDownload) {
+        
+        BSDownloadDestinationBlock destination = [request downloadDestinationBlock];
+        if (request.downloadTaskCompleted) {
+            [self downloadSuccess:request.downloadFilePath withRequest:request];
+            return;
+        }
+        
+        if (!request.isOpenResumeDownload) {
+            [self addDownloadWithRequest:request
+                              requestURL:requestURL
+                                progress:progress
+                             destination:destination];
+            return;
+        }
+        
+        NSData *resumeData = request.currentResumeData ?: [request getDownloadResumeData];
+        if (resumeData) {
+            
+            [self addDownloadWithRequest:request
+                              resumeData:resumeData
+                                progress:progress
+                             destination:destination];
+            
+        } else {
+            
+            [self addDownloadWithRequest:request
+                              requestURL:requestURL
+                                progress:progress
+                             destination:destination];
+            
+        }
+        
+        [self addDownloadWithRequestDelegate:request];
+        
+    }
     
 }
 
 
-#pragma mark - start download request
-- (void)pr_addDownloadRequest:(BSDownloadRequest *)request {
-    NSString *requestURL = [BSNetworkPrivate buildRequestUrl:request];
-    BSRequestProgress progress = [request progressBlock];
-    BSDownloadDestinationBlock destination = [request downloadDestinationBlock];
-    
-    if (request.isDownloadTaskCompleted) {
-        [self downloadSuccess:request.downloadFilePath withRequest:request];
-        return;
-    }
-    
-    if (!request.isOpenResumeDownload) {
-        [self addDownloadWithRequest:request
-                          requestURL:requestURL
-                            progress:progress
-                         destination:destination];
-        return;
-    }
-    
-    NSData *resumeData = request.currentResumeData ?: [request getDownloadResumeData];
-    if (resumeData) {
-        
-        [self addDownloadWithRequest:request
-                          resumeData:resumeData
-                            progress:progress
-                         destination:destination];
-        
-    } else {
-        
-        [self addDownloadWithRequest:request
-                          requestURL:requestURL
-                            progress:progress
-                         destination:destination];
-        
-    }
-    
-    [self addDownloadWithRequestDelegate:request];
-    
-}
+#pragma mark - download request
 
-- (void)addDownloadWithRequest:(BSDownloadRequest *)request
+- (void)addDownloadWithRequest:(BSRequest *)request
                     requestURL:(NSString *)requestURL
                       progress:(BSRequestProgress)progress
                    destination:(BSDownloadDestinationBlock)destination {
     
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL relativeToURL:_manager.baseURL]];
     
-    id parameters = [BSNetworkPrivate currentArgument:request];
+    id parameters = request.requestArgument;
     
     if (_config.parametersFilter) {
         parameters = [_config.parametersFilter filterParameter:parameters request:request];
@@ -321,7 +314,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     [request.currentURLSessionDownloadTask resume];
 }
 
-- (void)addDownloadWithRequest:(BSDownloadRequest *)request
+- (void)addDownloadWithRequest:(BSRequest *)request
                     resumeData:(NSData *)resumeData
                       progress:(BSRequestProgress)progress
                    destination:(BSDownloadDestinationBlock)destination {
@@ -340,7 +333,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     [request.currentURLSessionDownloadTask resume];
 }
 
-- (void)addDownloadWithRequestDelegate:(BSDownloadRequest *)request {
+- (void)addDownloadWithRequestDelegate:(BSRequest *)request {
     __block float lastTotalWriten = request.lastTotalWriten;
     [_manager setDownloadTaskDidWriteDataBlock:^(NSURLSession * _Nonnull session, NSURLSessionDownloadTask * _Nonnull downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
         
@@ -416,7 +409,6 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     dispatch_async(dispatch_get_main_queue(), ^{
         if (request.responseJOSNObject) {
             id response = [_config.fetchResponseModelFilter responseModel:request.responseJOSNObject request:request];
-//            [BSNetworkPrivate responseModel:request.responseJOSNObject request:request];
             if ([response isKindOfClass:[ResponseModel class]]) {
                 request.responseModel = (ResponseModel *)response;
             } else {
@@ -451,7 +443,6 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     request.error = error;
     ResponseModel *response =(ResponseModel *)[_config.fetchResponseModelFilter responseModel:error];
-//    [BSNetworkPrivate responseModel:error];
     request.responseModel = response;
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -468,7 +459,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
 #pragma mark - download callback analysis
-- (void)pr_downloadRequest:(BSDownloadRequest *)request
+- (void)pr_downloadRequest:(BSRequest *)request
                   filePath:(NSURL *)filePath
                      error:(NSError *)error
                sessionTask:(NSURLSessionDownloadTask *)task {
@@ -480,7 +471,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     if (error) {
         if (error.code == -999) {
-            [request start];
+            [request addRequest];
         } else {
             [self downloadFailure:error withSessionTask:task];
         }
@@ -493,14 +484,14 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
 - (void)downloadSuccess:(NSURL *)filePath withSessionTask:(NSURLSessionDownloadTask *)task {
-    BSDownloadRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
+    BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
     if (![request modifyContentWithName:filePath.lastPathComponent]) {
         NSLog(@"修改信息失败");
     }
     [self downloadSuccess:filePath withRequest:request];
 }
 
-- (void)downloadSuccess:(NSURL *)filePath withRequest:(BSDownloadRequest *)request {
+- (void)downloadSuccess:(NSURL *)filePath withRequest:(BSRequest *)request {
     ResponseModel *model = [[ResponseModel alloc] init];
     model.code = _config.successCodeStatus;
     model.message = @"download is success";
@@ -523,7 +514,6 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     
     request.error = error;
     ResponseModel *response =(ResponseModel *)[_config.fetchResponseModelFilter responseModel:error];
-//    [BSNetworkPrivate responseModel:error];
     request.responseModel = response;
     
     dispatch_async(dispatch_get_main_queue(), ^{

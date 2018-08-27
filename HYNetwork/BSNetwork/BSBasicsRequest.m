@@ -32,10 +32,6 @@ NSString *const BSRequestErrorDomain = @"com.XiaoYang.requestErrorDomain";
 }
 
 
-- (id)globalArgument {
-    return nil;
-}
-
 - (id)requestHTTPHeaderField {
     return nil;
 }

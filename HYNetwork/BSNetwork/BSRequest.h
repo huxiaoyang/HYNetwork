@@ -6,7 +6,7 @@
 //  Copyright © 2016年 XiaoYang. All rights reserved.
 //
 
-#import "BSCacheRequest.h"
+#import "BSDownloadRequest.h"
 @class BSRequest;
 
 
@@ -14,8 +14,7 @@ typedef void (^BSRequestCompletionBlock) (__kindof BSRequest * _Nullable request
 
 
 
-
-@interface BSRequest : BSCacheRequest
+@interface BSRequest : BSDownloadRequest
 
 
 

@@ -4,8 +4,9 @@ platform :ios, '8.0'
 inhibit_all_warnings!
 
 target 'HYNetWork' do
-pod 'AFNetworking', '3.0.4'
-pod 'YYModel', '0.9.12'
+pod 'AFNetworking'
+pod 'YYModel'
+pod 'libextobjc'
 end
 
 post_install do |installer|

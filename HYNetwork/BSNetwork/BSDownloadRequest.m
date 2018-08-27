@@ -11,68 +11,27 @@
 #import "BSNetworkPrivate.h"
 
 
+@interface BSDownloadRequest ()
+
+@property (nonatomic, assign) BOOL downloadTaskCompleted;
+@property (nonatomic, copy) NSString *savedDownloadFileName;
+@property (nonatomic, strong) NSURL *downloadFilePath;
+
+@end
+
+
 @implementation BSDownloadRequest
-
-- (void)start {
-    [[BSAPIClient sharedClient] addRequest:self];
-}
-
-- (void)setCompletionBlockWithSuccess:(BSDownRequestCompletionBlock)success
-                              failure:(BSDownRequestCompletionBlock)failure {
-        self.successCompletionBlock = success;
-        self.failureCompletionBlock = failure;
-}
-
-
-- (void)startWithCompletionSuccess:(BSDownRequestCompletionBlock)success
-                           failure:(BSDownRequestCompletionBlock)failure {
-    
-    [self setCompletionBlockWithSuccess:success
-                                failure:failure];
-    [self start];
-    
-}
-
-- (void)clearCompletionBlock {
-    // nil out to break the retain cycle.
-    self.successCompletionBlock = nil;
-    self.failureCompletionBlock = nil;
-}
-
 
 
 #pragma mark - getter
-
-- (NSURLSessionTaskState)taskState {
-    return self.currentURLSessionDownloadTask.state;
-}
 
 - (BOOL)isOpenResumeDownload {
     return NO;
 }
 
-- (BOOL)isTaskRunning {
-    return self.currentURLSessionDownloadTask ? self.currentURLSessionDownloadTask.state == NSURLSessionTaskStateRunning : NO;
-}
-
-- (void)taskCancel {
-    if ([self isTaskRunning]) {
-        [self.currentURLSessionDownloadTask cancel];
-        return;
-    }
-}
-
-- (BSRequestMethod)requestMethod {
-    return BSRequestMethodDownload;
-}
-
-
 - (BSDownloadDestinationBlock)downloadDestinationBlock {
     if ([self requestMethod] == BSRequestMethodDownload) {
-        return ^(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-            NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-            return [documentsDirectoryURL URLByAppendingPathComponent:@"test.jpeg"];
-        };
+        NSAssert(NO, @"必须重写Multipart回调");
     }
     return nil;
 }
@@ -90,37 +49,45 @@
 }
 
 - (NSString *)savedDownloadFileName {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSURL *resumePlistUrl = [NSURL fileURLWithPath:paths.firstObject];
-    resumePlistUrl = [resumePlistUrl URLByAppendingPathComponent:self.resumeConfigPlistName];
-    
-    NSFileManager *manager = [NSFileManager defaultManager];
-    if (![manager fileExistsAtPath:resumePlistUrl.path]) {
-        return nil;
-    }
-    //获取需要重新下载的文件名
-    NSDictionary *listDic = [NSDictionary dictionaryWithContentsOfURL:resumePlistUrl];
-    __block NSString *savedName = nil;
-    [listDic enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([key isEqualToString:self.savedName]) {
-            savedName = obj;
-            *stop = YES;
+    if (!_savedDownloadFileName) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSURL *resumePlistUrl = [NSURL fileURLWithPath:paths.firstObject];
+        resumePlistUrl = [resumePlistUrl URLByAppendingPathComponent:self.resumeConfigPlistName];
+        
+        NSFileManager *manager = [NSFileManager defaultManager];
+        if (![manager fileExistsAtPath:resumePlistUrl.path]) {
+            return nil;
         }
-    }];
-    
-    return savedName;
+        
+        NSDictionary *listDic = [NSDictionary dictionaryWithContentsOfURL:resumePlistUrl];
+        __block NSString *savedName = nil;
+        [listDic enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([key isEqualToString:self.savedName]) {
+                savedName = obj;
+                *stop = YES;
+            }
+        }];
+        
+        _savedDownloadFileName = savedName;
+    }
+    return _savedDownloadFileName;
 }
 
-- (BOOL)isDownloadTaskCompleted {
-    return self.savedDownloadFileName;
+- (BOOL)downloadTaskCompleted {
+    if (!_downloadTaskCompleted) {
+        _downloadTaskCompleted = self.savedDownloadFileName.length > 0;
+    }
+    return _downloadTaskCompleted;
 }
 
 - (NSURL *)downloadFilePath {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSURL *documentsDirectoryURL = [NSURL fileURLWithPath:paths.firstObject];
-    return [documentsDirectoryURL URLByAppendingPathComponent:self.savedDownloadFileName];
+    if (!_downloadFilePath) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        NSURL *documentsDirectoryURL = [NSURL fileURLWithPath:paths.firstObject];
+        _downloadFilePath = [documentsDirectoryURL URLByAppendingPathComponent:self.savedDownloadFileName];
+    }
+    return _downloadFilePath;
 }
-
 
 - (NSData *)getDownloadResumeData {
     @synchronized (self) {

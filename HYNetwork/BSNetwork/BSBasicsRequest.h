@@ -30,16 +30,14 @@ typedef NS_ENUM(NSUInteger, BSRequestSerializerType) {
 };
 
 typedef NS_ENUM(NSInteger, BSResponseSerializerType) {
-    // NSData type
-    BSResponseSerializerTypeHTTP,
     // JSON object type
     BSResponseSerializerTypeJSON,
+    // NSData type
+    BSResponseSerializerTypeHTTP,
 };
 
 
 typedef void (^BSConstructingBlock)(id <AFMultipartFormData> _Nonnull formData);
-
-typedef NSURL * _Nullable (^BSDownloadDestinationBlock)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response);
 
 typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
 
@@ -66,12 +64,6 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  *  @return 请求的参数列表
  */
 - (nullable id)requestArgument;
-
-
-/**
- *  @return 公共参数
- */
-- (nullable id)globalArgument;
 
 
 /**

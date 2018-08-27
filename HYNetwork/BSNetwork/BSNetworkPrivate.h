@@ -16,9 +16,6 @@
 + (NSString *)buildRequestUrl:(BSBasicsRequest *)request;
 
 
-+ (id)currentArgument:(BSBasicsRequest *)request;
-
-
 + (NSString *)md5StringFromString:(NSString *)string;
 
 

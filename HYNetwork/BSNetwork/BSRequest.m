@@ -113,7 +113,12 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
     
     [self setCompletionBlockWithSuccess:success
                                 failure:failure];
-    [self start];
+    
+    if (self.requestMethod == BSRequestMethodDownload) {
+        [self addRequest];
+    } else {
+        [self start];
+    }
     
 }
 
@@ -156,7 +161,6 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
 - (ResponseModel *)responseModel {
     if (self.cacheJSON) {
         return [[BSNetworkConfig sharedInstance].fetchResponseModelFilter responseModel:self.cacheJSON request:self];
-//        [BSNetworkPrivate responseModel:self.cacheJSON request:self];
     }
     return super.responseModel;
 }
@@ -167,6 +171,34 @@ static dispatch_queue_t bsrequest_cache_writing_queue() {
 
 - (BOOL)filterFailureRequestCompletion:(__kindof BSRequest *)request {
     return YES;
+}
+
+
+#pragma mark - override methods
+
+- (NSURLSessionTaskState)taskState {
+    if ([self requestMethod] == BSRequestMethodDownload) {
+        return self.currentURLSessionDownloadTask.state;
+    }
+    return [super taskState];
+}
+
+- (BOOL)isTaskRunning {
+    if ([self requestMethod] == BSRequestMethodDownload) {
+        return self.currentURLSessionDownloadTask ? self.currentURLSessionDownloadTask.state == NSURLSessionTaskStateRunning : NO;
+    }
+    return [super taskState];
+}
+
+- (void)taskCancel {
+    if (![self isTaskRunning]) return;
+    
+    if ([self requestMethod] == BSRequestMethodDownload) {
+        [self.currentURLSessionDownloadTask cancel];
+        return;
+    }
+    
+    [super taskState];
 }
 
 @end

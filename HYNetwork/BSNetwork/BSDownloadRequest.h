@@ -6,32 +6,13 @@
 //  Copyright © 2017年 Xiao Yang. All rights reserved.
 //
 
-#import "BSBasicsRequest.h"
-@class BSDownloadRequest;
+#import "BSCacheRequest.h"
 
 
-typedef void (^BSDownRequestCompletionBlock) (__kindof BSDownloadRequest * _Nullable request);
+typedef NSURL * _Nullable (^BSDownloadDestinationBlock)(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response);
 
 
-@interface BSDownloadRequest : BSBasicsRequest
-
-
-@property (nonatomic, copy, nullable) BSDownRequestCompletionBlock successCompletionBlock;
-
-
-@property (nonatomic, copy, nullable) BSDownRequestCompletionBlock failureCompletionBlock;
-
-
-/**
- *  数据请求
- *
- *  @param success 成功回调
- *  @param failure 失败回调
- */
-- (void)startWithCompletionSuccess:(_Nullable BSDownRequestCompletionBlock)success
-                           failure:(_Nullable BSDownRequestCompletionBlock)failure;
-
-- (void)start;
+@interface BSDownloadRequest : BSCacheRequest
 
 /**
  *  下载事件时重写该方法
@@ -40,23 +21,16 @@ typedef void (^BSDownRequestCompletionBlock) (__kindof BSDownloadRequest * _Null
  */
 - (nullable BSDownloadDestinationBlock)downloadDestinationBlock;
 
-
 /**
- *  防止循环引用
+ *  是否开启断点下载 - 默认'NO'不开启
  */
-- (void)clearCompletionBlock;
+- (BOOL)isOpenResumeDownload;
 
 
 /**
  *  当前下载任务
  */
 @property (atomic, strong, nullable) NSURLSessionDownloadTask *currentURLSessionDownloadTask;
-
-
-/**
- *  是否开启断点下载 - 默认'NO'不开启
- */
-- (BOOL)isOpenResumeDownload;
 
 
 /**
@@ -68,19 +42,24 @@ typedef void (^BSDownRequestCompletionBlock) (__kindof BSDownloadRequest * _Null
 /**
  *  下载完成后保存的文件名
  */
-- (nullable NSString *)savedDownloadFileName;
+@property (nonatomic, copy, readonly) NSString *savedDownloadFileName;
 
 
 /**
  *  下载完成后保存的路径
  */
-- (nullable NSURL *)downloadFilePath;
+@property (nonatomic, strong, readonly) NSURL *downloadFilePath;
+
+/**
+ *  是否已经下载完成
+ */
+@property (nonatomic, assign, readonly) BOOL downloadTaskCompleted;
 
 
 /**
  *  已下载总数下载
  */
-@property (nonatomic, assign) NSUInteger lastTotalWriten;
+@property (nonatomic, assign) int64_t lastTotalWriten;
 
 
 /**
@@ -90,19 +69,13 @@ typedef void (^BSDownRequestCompletionBlock) (__kindof BSDownloadRequest * _Null
 
 
 /**
- *  是否已经下载完成
- */
-- (BOOL)isDownloadTaskCompleted;
-
-
-/**
- *  获取断点数据
+ *  获取断点数据 - 只读
  */
 - (nullable NSData *)getDownloadResumeData;
 
 
 /**
- *  下载完成后，修改文件名称
+ *  下载完成后，修改文件名称 - 只读
  */
 - (BOOL)modifyContentWithName:(nullable NSString *)name;
 

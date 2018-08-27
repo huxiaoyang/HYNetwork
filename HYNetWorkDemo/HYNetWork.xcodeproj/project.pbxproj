@@ -15,6 +15,8 @@
 		045C4E9120F606A600BA6D1F /* BSRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8720F606A600BA6D1F /* BSRequest.m */; };
 		045C4E9220F606A600BA6D1F /* BSDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8820F606A600BA6D1F /* BSDownloadRequest.m */; };
 		045C4E9320F606A600BA6D1F /* ResponseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 045C4E8B20F606A600BA6D1F /* ResponseModel.m */; };
+		7550ACFC2133FE45000908A1 /* BSRequestAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7550ACF62133FE45000908A1 /* BSRequestAdapter.m */; };
+		7550ACFD2133FE45000908A1 /* BSBlockBasicsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 7550ACFB2133FE45000908A1 /* BSBlockBasicsRequest.m */; };
 		E14C0DF5ECFBA1BA3D195CE7 /* libPods-HYNetWork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */; };
 		ED09F82A1D194AA700F07389 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F8291D194AA700F07389 /* main.m */; };
 		ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED09F82C1D194AA700F07389 /* AppDelegate.m */; };
@@ -43,6 +45,13 @@
 		045C4E8820F606A600BA6D1F /* BSDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSDownloadRequest.m; sourceTree = "<group>"; };
 		045C4E8A20F606A600BA6D1F /* ResponseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseModel.h; sourceTree = "<group>"; };
 		045C4E8B20F606A600BA6D1F /* ResponseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseModel.m; sourceTree = "<group>"; };
+		7550ACF52133FE45000908A1 /* BSDownloadAdapterProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSDownloadAdapterProtocol.h; sourceTree = "<group>"; };
+		7550ACF62133FE45000908A1 /* BSRequestAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSRequestAdapter.m; sourceTree = "<group>"; };
+		7550ACF72133FE45000908A1 /* BSBlockBasicsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBlockBasicsRequest.h; sourceTree = "<group>"; };
+		7550ACF82133FE45000908A1 /* BSRequestAdapterProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSRequestAdapterProtocol.h; sourceTree = "<group>"; };
+		7550ACF92133FE45000908A1 /* BSCacheRequestAdapterProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCacheRequestAdapterProtocol.h; sourceTree = "<group>"; };
+		7550ACFA2133FE45000908A1 /* BSRequestAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSRequestAdapter.h; sourceTree = "<group>"; };
+		7550ACFB2133FE45000908A1 /* BSBlockBasicsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBlockBasicsRequest.m; sourceTree = "<group>"; };
 		A2294A5D113268C727CBA5A8 /* Pods-HYNetWork.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HYNetWork.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork.debug.xcconfig"; sourceTree = "<group>"; };
 		DF13DC9C18140B914D432CD9 /* Pods-HYNetWork.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HYNetWork.release.xcconfig"; path = "Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork.release.xcconfig"; sourceTree = "<group>"; };
 		E33792952FFC99D467DFE278 /* libPods-HYNetWork.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HYNetWork.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +87,7 @@
 		045C4E7920F606A600BA6D1F /* HYNetwork */ = {
 			isa = PBXGroup;
 			children = (
+				7550ACF42133FE45000908A1 /* BSRequestBlockAdapter */,
 				045C4E7A20F606A600BA6D1F /* BSNetwork */,
 				045C4E8920F606A600BA6D1F /* BSModel */,
 			);
@@ -113,6 +123,20 @@
 				045C4E8B20F606A600BA6D1F /* ResponseModel.m */,
 			);
 			path = BSModel;
+			sourceTree = "<group>";
+		};
+		7550ACF42133FE45000908A1 /* BSRequestBlockAdapter */ = {
+			isa = PBXGroup;
+			children = (
+				7550ACF52133FE45000908A1 /* BSDownloadAdapterProtocol.h */,
+				7550ACF62133FE45000908A1 /* BSRequestAdapter.m */,
+				7550ACF72133FE45000908A1 /* BSBlockBasicsRequest.h */,
+				7550ACF82133FE45000908A1 /* BSRequestAdapterProtocol.h */,
+				7550ACF92133FE45000908A1 /* BSCacheRequestAdapterProtocol.h */,
+				7550ACFA2133FE45000908A1 /* BSRequestAdapter.h */,
+				7550ACFB2133FE45000908A1 /* BSBlockBasicsRequest.m */,
+			);
+			path = BSRequestBlockAdapter;
 			sourceTree = "<group>";
 		};
 		93C466C7EE48536DE578BE3B /* Frameworks */ = {
@@ -212,6 +236,7 @@
 				TargetAttributes = {
 					ED09F8241D194AA700F07389 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 87N2AEHWHH;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -274,6 +299,7 @@
 			files = (
 				045C4E9320F606A600BA6D1F /* ResponseModel.m in Sources */,
 				EDCE485E1E9DF73400953AF7 /* TestDownloadRequest.m in Sources */,
+				7550ACFC2133FE45000908A1 /* BSRequestAdapter.m in Sources */,
 				ED09F8301D194AA700F07389 /* ViewController.m in Sources */,
 				ED09F8591D1A56D500F07389 /* testModel.m in Sources */,
 				045C4E8F20F606A600BA6D1F /* BSBasicsRequest.m in Sources */,
@@ -286,6 +312,7 @@
 				ED09F82D1D194AA700F07389 /* AppDelegate.m in Sources */,
 				045C4E8E20F606A600BA6D1F /* BSNetworkConfig.m in Sources */,
 				ED09F82A1D194AA700F07389 /* main.m in Sources */,
+				7550ACFD2133FE45000908A1 /* BSBlockBasicsRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,7 +425,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 87N2AEHWHH;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HYNetWork/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -414,7 +441,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 87N2AEHWHH;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = HYNetWork/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
