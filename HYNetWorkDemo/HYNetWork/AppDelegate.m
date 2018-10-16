@@ -22,11 +22,11 @@
     config.baseURL = @"http://bbs.cehome.com";
     
     // 重写responseParams时，如果某个字段不存在，不要为空，随便写一个值
-    config.responseParams = @{REQUEST_DATA    : @"items",
-                              REQUEST_MESSAGE : @"message",
-                              REQUEST_CODE    : @"ret",
-                              REQUEST_TIME    : @"time"
+    config.responseParams = @{ BSResponseDataKey    : @[@"items"],
+                              BSResPonseMessageKey : @[@"message"],
+                              BSResPonseTimeKey    : @[@"time"]
                               };
+    config.successCodeDic = @{@"ret" : @"0"};
     
     
 ////     设置缓存时间即开启缓存，默认不开启

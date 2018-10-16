@@ -98,20 +98,20 @@
 		045C4E7A20F606A600BA6D1F /* BSNetwork */ = {
 			isa = PBXGroup;
 			children = (
+				045C4E8520F606A600BA6D1F /* BSAPIClient.h */,
 				045C4E7B20F606A600BA6D1F /* BSAPIClient.m */,
 				045C4E7C20F606A600BA6D1F /* BSNetworkPrivate.h */,
-				045C4E7D20F606A600BA6D1F /* BSCacheRequest.m */,
-				045C4E7E20F606A600BA6D1F /* BSBasicsRequest.h */,
-				045C4E7F20F606A600BA6D1F /* BSDownloadRequest.h */,
-				045C4E8020F606A600BA6D1F /* BSRequest.h */,
-				045C4E8120F606A600BA6D1F /* BSNetworkConfig.m */,
-				045C4E8220F606A600BA6D1F /* BSBasicsRequest.m */,
 				045C4E8320F606A600BA6D1F /* BSNetworkPrivate.m */,
 				045C4E8420F606A600BA6D1F /* BSCacheRequest.h */,
-				045C4E8520F606A600BA6D1F /* BSAPIClient.h */,
-				045C4E8620F606A600BA6D1F /* BSNetworkConfig.h */,
-				045C4E8720F606A600BA6D1F /* BSRequest.m */,
+				045C4E7D20F606A600BA6D1F /* BSCacheRequest.m */,
+				045C4E7E20F606A600BA6D1F /* BSBasicsRequest.h */,
+				045C4E8220F606A600BA6D1F /* BSBasicsRequest.m */,
+				045C4E7F20F606A600BA6D1F /* BSDownloadRequest.h */,
 				045C4E8820F606A600BA6D1F /* BSDownloadRequest.m */,
+				045C4E8620F606A600BA6D1F /* BSNetworkConfig.h */,
+				045C4E8120F606A600BA6D1F /* BSNetworkConfig.m */,
+				045C4E8020F606A600BA6D1F /* BSRequest.h */,
+				045C4E8720F606A600BA6D1F /* BSRequest.m */,
 			);
 			path = BSNetwork;
 			sourceTree = "<group>";
@@ -215,6 +215,8 @@
 				ED09F8211D194AA700F07389 /* Sources */,
 				ED09F8221D194AA700F07389 /* Frameworks */,
 				ED09F8231D194AA700F07389 /* Resources */,
+				E1AECA3E1A7B0D3E0548BCA7 /* [CP] Embed Pods Frameworks */,
+				D5CCB6D99F076F56A2F93F8F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -288,6 +290,44 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D5CCB6D99F076F56A2F93F8F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E1AECA3E1A7B0D3E0548BCA7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HYNetWork/Pods-HYNetWork-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

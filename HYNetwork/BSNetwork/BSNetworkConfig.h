@@ -15,38 +15,42 @@
 @protocol BSFetchResponseModelFilterProtocol;
 
 
+typedef NSString * BSResponseKey;
+typedef NSDictionary  <BSResponseKey, NSArray <NSString *> *> BSResponseParamsDic;
 
-extern NSString *const REQUEST_DATA;        // json data 数据的key
-extern NSString *const REQUEST_MESSAGE;     // json message 信息的key
-extern NSString *const REQUEST_CODE;        // json code 状态码的key
-extern NSString *const REQUEST_TIME;        // json time 时间的key 
+FOUNDATION_EXTERN BSResponseKey const BSResponseDataKey;        // json data 数据的key
+FOUNDATION_EXTERN BSResponseKey const BSResPonseMessageKey;     // json message 信息的key
+FOUNDATION_EXTERN BSResponseKey const BSResPonseTimeKey;        // json time 时间的key
+
+FOUNDATION_EXTERN NSString * const BSResponseSuccessCode;
 
 
 @interface BSNetworkConfig : NSObject
 
 + (instancetype)sharedInstance;
 
-// 网络请求基地址
+/// 网络请求基地址
 @property (nonatomic, copy) NSString *baseURL;
 
 
 @property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
 
-// p12密码
+/// p12密码
 @property (nonatomic, copy, readonly) NSString *secretCodeWithP12;
 
-// 请求返回json的主要字段
-@property (nonatomic, strong) NSDictionary <NSString *, NSString *> *responseParams;
+/// 请求返回json第一层的主要字段
+/// value为取值字段数组 例：{: @[@"data", @"result"]}
+@property (nonatomic, strong) BSResponseParamsDic *responseParams;
+
+/// 请求返回response中包含的判断请求是否成功的字段，一般为code
+/// key为字段名 value为成功的值，可以设置多组，例： {@"code" : @"200", @"result" : @"0"}
+@property (nonatomic, strong) NSDictionary <NSString *, NSString *> *successCodeDic;
 
 
-// 请求成功的状态码 - 默认是@0
-@property (nonatomic, strong) NSNumber *successCodeStatus;
-
-
-// 参数处理中间件
+/// 参数处理中间件
 @property (nonatomic, strong, readonly) id<BSParametersFilterProtocol> parametersFilter;
 
-// json to model 中间件
+/// json to model 中间件
 @property (nonatomic, strong, readonly) id<BSFetchResponseModelFilterProtocol> fetchResponseModelFilter;
 
 
@@ -81,7 +85,7 @@ extern NSString *const REQUEST_TIME;        // json time 时间的key
 @protocol BSFetchResponseModelFilterProtocol <NSObject>
 
 @concrete
-- (id)responseModel:(id)responseObject request:(BSBasicsRequest *)request;
+- (id)responseModel:(id)responseJson request:(BSBasicsRequest *)request;
 
 @concrete
 - (id)responseModel:(NSError *)error;

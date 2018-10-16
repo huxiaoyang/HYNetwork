@@ -10,14 +10,15 @@
 
 @interface ResponseModel : NSObject
 
-@property (nonatomic, strong, nullable) NSNumber *code;
+/// 200是请求成功
+@property (nonatomic, copy, nullable) NSString *code;
 
 @property (nonatomic, copy, nullable) NSString *message;
 
-// 请求返回的model
-// 下载时是文件filePath
+/// 请求返回的model
+/// 下载时是文件filePath
 @property (nonatomic, strong, nullable) id data;
 
-@property (nonatomic, strong, nullable) NSNumber *timestamp;
+@property (nonatomic, copy, nullable) NSString *timestamp;
 
 @end

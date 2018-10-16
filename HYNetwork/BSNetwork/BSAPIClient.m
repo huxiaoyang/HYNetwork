@@ -379,7 +379,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 
 - (void)requestSuccess:(id)responseObject withSessionTask:(NSURLSessionDataTask *)task {
-    NSString *requestCode = _config.responseParams[REQUEST_CODE];
+//    NSString *requestCode = _config.responseParams[REQUEST_CODE];
     
     BSRequest *request = objc_getAssociatedObject(task, &kBSRequestKey);
     if (!request) return;
@@ -416,19 +416,44 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
             }
         }
         
-        if ([responseObject[requestCode] isEqualToNumber:_config.successCodeStatus]) {
-            if (request.successCompletionBlock) {
-                request.successCompletionBlock(request);
-            }
-        }
-        else {
+        if (![responseObject isKindOfClass:NSDictionary.class]) {
             if (request.failureCompletionBlock) {
                 request.failureCompletionBlock(request);
             }
             
-            request.error = [NSError errorWithDomain:BSRequestErrorDomain code:-10010 userInfo:@{NSLocalizedDescriptionKey:@"HTTP请求返回成功，但是code码不等于successCodeStatus"}];
+            request.error = [NSError errorWithDomain:BSRequestErrorDomain code:-90010 userInfo:@{NSLocalizedDescriptionKey:@"HTTP请求返回成功，但是无法解析response"}];
             NSDictionary *dict = @{@"userInfo" : request};
             [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
+        }
+        
+        __block BOOL _responseCodeIsSuccess = NO;
+        NSDictionary *responseCodeDic = _config.successCodeDic;
+        [responseCodeDic enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
+           
+            if ([((NSDictionary *)responseObject).allKeys containsObject:key]) {
+                if ([responseObject[key] isKindOfClass:NSNumber.class]) {
+                    _responseCodeIsSuccess = [((NSNumber *)responseObject[key]).stringValue isEqualToString:obj];
+                }
+                if ([responseObject[key] isKindOfClass:NSString.class]) {
+                    _responseCodeIsSuccess = [responseObject[key] isEqualToString:obj];
+                }
+                *stop = YES;
+            }
+            
+        }];
+        
+        if (!_responseCodeIsSuccess) {
+            if (request.failureCompletionBlock) {
+                request.failureCompletionBlock(request);
+            }
+            
+            request.error = [NSError errorWithDomain:BSRequestErrorDomain code:-90001 userInfo:@{NSLocalizedDescriptionKey:@"HTTP请求返回成功，但是code码不等于successCodeStatus"}];
+            NSDictionary *dict = @{@"userInfo" : request};
+            [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
+        }
+        
+        if (request.successCompletionBlock) {
+            request.successCompletionBlock(request);
         }
         
         [request clearCompletionBlock];
@@ -493,9 +518,9 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
 
 - (void)downloadSuccess:(NSURL *)filePath withRequest:(BSRequest *)request {
     ResponseModel *model = [[ResponseModel alloc] init];
-    model.code = _config.successCodeStatus;
+    model.code = BSResponseSuccessCode;
     model.message = @"download is success";
-    model.timestamp = @([[NSDate date] timeIntervalSince1970]);
+    model.timestamp = @([[NSDate date] timeIntervalSince1970]).stringValue;
     model.data = filePath;
     
     request.responseModel = model;

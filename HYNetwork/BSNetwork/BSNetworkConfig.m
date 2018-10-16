@@ -16,10 +16,11 @@
 #endif
 
 
-NSString *const REQUEST_DATA      = @"com.XiaoYang.json.data";
-NSString *const REQUEST_MESSAGE   = @"com.XiaoYang.json.message";
-NSString *const REQUEST_CODE      = @"com.XiaoYang.json.code";
-NSString *const REQUEST_TIME      = @"com.XiaoYang.json.timestamp";
+BSResponseKey const BSResponseDataKey      = @"com.XiaoYang.json.data";
+BSResponseKey const BSResPonseMessageKey   = @"com.XiaoYang.json.message";
+BSResponseKey const BSResPonseTimeKey      = @"com.XiaoYang.json.timestamp";
+
+NSString * const BSResponseSuccessCode    = @"200";
 
 
 @implementation BSNetworkConfig
@@ -40,14 +41,13 @@ NSString *const REQUEST_TIME      = @"com.XiaoYang.json.timestamp";
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
         _securityPolicy = [AFSecurityPolicy defaultPolicy];
         _secretCodeWithP12 = nil;
-        _successCodeStatus = @0;
         _parametersFilter = nil;
         _fetchResponseModelFilter = [[BSDefaultFetchResponseModelFilter alloc] init];
-        _responseParams = @{REQUEST_DATA    : @"data",
-                            REQUEST_MESSAGE : @"msg",
-                            REQUEST_CODE    : @"code",
-                            REQUEST_TIME    : @"timestamp"
+        _responseParams = @{ BSResponseDataKey    : @[@"data"],
+                            BSResPonseMessageKey : @[@"msg"],
+                            BSResPonseTimeKey    : @[@"timestamp"]
                             };
+        _successCodeDic = @{@"code" : @"0"};
     }
     return self;
 }
@@ -77,82 +77,134 @@ NSString *const REQUEST_TIME      = @"com.XiaoYang.json.timestamp";
 
 @concreteprotocol(BSFetchResponseModelFilterProtocol)
 
-- (id)responseModel:(id)responseObject request:(BSBasicsRequest *)request {
+- (id)responseModel:(id)responseJson request:(BSBasicsRequest *)request {
     BSNetworkConfig *config = [BSNetworkConfig sharedInstance];
     
-    NSString * requestData = config.responseParams[REQUEST_DATA];
-    NSString * requestCode = config.responseParams[REQUEST_CODE];
-    NSString * requestMsg  = config.responseParams[REQUEST_MESSAGE];
-    NSString * requestTime = config.responseParams[REQUEST_TIME];
+    NSArray * dataValues = config.responseParams[BSResponseDataKey];
+    NSArray * codeValues = config.successCodeDic.allKeys;
+    NSArray * messageValues  = config.responseParams[BSResPonseMessageKey];
+    NSArray * timeValues = config.responseParams[BSResPonseTimeKey];
     
-    
-    if ([responseObject isKindOfClass:[NSArray class]]) {
+    if ([responseJson isKindOfClass:[NSArray class]]) {
         ResponseModel *model = [[ResponseModel alloc] init];
-        model.code = config.successCodeStatus;
+        model.code = BSResponseSuccessCode;
         model.message = @"request is success";
-        model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-        model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseObject];
+        model.timestamp = @([[NSDate date] timeIntervalSince1970]).stringValue;
+        model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseJson];
         return model;
     }
     
-    if ([responseObject isKindOfClass:[NSDictionary class]]) {
+    if ([responseJson isKindOfClass:[NSDictionary class]]) {
         
         ResponseModel *model = [[ResponseModel alloc] init];
         
-        if (![[responseObject allKeys] containsObject:requestData] && ![[responseObject allKeys] containsObject:requestCode]) {
-            model.code = config.successCodeStatus;
+        BOOL isContainsData = NO;
+        BOOL isContainsCode = NO;
+        BOOL isContainsMessage = NO;
+        BOOL isContainsTime = NO;
+        
+        NSString *dataKey = nil;
+        NSString *codeKey = nil;
+        NSString *messageKey = nil;
+        NSString *timeKey = nil;
+        
+        for (NSString *data in dataValues) {
+            if ([[responseJson allKeys] containsObject:data]) {
+                isContainsData = YES;
+                dataKey = data;
+                break;
+            }
+        }
+        
+        for (NSString *code in codeValues) {
+            if ([[responseJson allKeys] containsObject:code]) {
+                isContainsCode = YES;
+                codeKey = code;
+                break;
+            }
+        }
+        
+        for (NSString *message in messageValues) {
+            if ([[responseJson allKeys] containsObject:message]) {
+                isContainsMessage = YES;
+                messageKey = message;
+                break;
+            }
+        }
+        
+        for (NSString *time in timeValues) {
+            if ([[responseJson allKeys] containsObject:time]) {
+                isContainsTime = YES;
+                timeKey = time;
+                break;
+            }
+        }
+        
+        if (!isContainsData && !isContainsCode) {
+            model.code = BSResponseSuccessCode;
             model.message = @"request is success";
-            model.timestamp = @([[NSDate date] timeIntervalSince1970]);
-            model.data = [NSDictionary yy_modelDictionaryWithClass:[request modelClass] json:responseObject];
+            model.timestamp = @([[NSDate date] timeIntervalSince1970]).stringValue;
+            model.data = [NSDictionary yy_modelDictionaryWithClass:[request modelClass] json:responseJson];
             return model;
         }
         
-        if ([[responseObject allKeys] containsObject:requestCode]) {
-            model.code = responseObject[requestCode];
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestMsg]) {
-            model.message = responseObject[requestMsg];
-        }
-        
-        if ([[responseObject allKeys] containsObject:requestTime]) {
-            model.timestamp = responseObject[requestTime];
-        }
-        
-        if (![[responseObject allKeys] containsObject:requestData]) {
-            model.data = nil;
-            return model;
-        }
-        
-        if (![responseObject[requestData] isKindOfClass:[NSDictionary class]] && ![responseObject[requestData] isKindOfClass:[NSArray class]]) {
-            model.data = responseObject[requestData];
-            return model;
-        }
-        
-        if ([responseObject[requestData] count] == 0 || [responseObject[requestData] isEqual:[NSNull null]]) {
-            model.data = nil;
-            return model;
-        }
-        
-        if ([responseObject[requestData] isKindOfClass:[NSArray class]]) {
-            
-            NSArray *items = responseObject[requestData];
-            if (items.count == 0) {
-                model.data = items;
-                return model;
+        if (isContainsCode) {
+            if ([responseJson[codeKey] isKindOfClass:NSString.class]) {
+                if ([responseJson[codeKey] isEqualToString:config.successCodeDic[codeKey]]) {
+                    model.code = BSResponseSuccessCode;
+                } else {
+                    model.code = responseJson[codeKey];
+                }
             }
             
+            if ([responseJson[codeKey] isKindOfClass:NSNumber.class]) {
+                if ([((NSNumber *)responseJson[codeKey]).stringValue isEqualToString:config.successCodeDic[codeKey]]) {
+                    model.code = BSResponseSuccessCode;
+                } else {
+                    model.code = ((NSNumber *)responseJson[codeKey]).stringValue;
+                }
+            }
+        }
+        
+        if (isContainsMessage) {
+            model.message = responseJson[messageKey];
+        }
+        
+        if (isContainsTime) {
+            model.timestamp = responseJson[timeKey];
+        }
+
+        if (!isContainsData) {
+            if ([model.code isEqualToString:BSResponseSuccessCode] && ((NSDictionary *)responseJson).count > 1) {
+                model.data = [[request modelClass] yy_modelWithJSON:responseJson];
+            } else {
+                model.data = nil;
+            }
+            return model;
+        }
+
+        if ([responseJson[dataKey] isEqual:[NSNull null]]) {
+            model.data = nil;
+            return model;
+        }
+        
+        if ([responseJson[dataKey] count] == 0) {
+            model.data = nil;
+            return model;
+        }
+
+        if ([responseJson[dataKey] isKindOfClass:NSArray.class]) {
+            NSArray *items = responseJson[dataKey];
             if (![[items firstObject] isKindOfClass:[NSDictionary class]]) {
                 model.data = items;
                 return model;
             }
-            
-            model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseObject[requestData]];
+            model.data = [NSArray yy_modelArrayWithClass:[request modelClass] json:responseJson[dataKey]];
             return model;
         }
         
-        if ([responseObject[requestData] isKindOfClass:[NSDictionary class]]) {
-            model.data = [[request modelClass] yy_modelWithJSON:responseObject[requestData]];
+        if ([responseJson[dataKey] isKindOfClass:NSDictionary.class]) {
+            model.data = [[request modelClass] yy_modelWithJSON:responseJson[dataKey]];
             return model;
         }
         
@@ -166,8 +218,8 @@ NSString *const REQUEST_TIME      = @"com.XiaoYang.json.timestamp";
 - (id)responseModel:(NSError *)error {
     
     ResponseModel *model = [[ResponseModel alloc] init];
-    model.code = @(error.code);
-    model.timestamp = @([[NSDate date] timeIntervalSince1970]);
+    model.code = @(error.code).stringValue;
+    model.timestamp = @([[NSDate date] timeIntervalSince1970]).stringValue;
 #ifdef DEBUG
     model.message = error.localizedDescription;
 #else
