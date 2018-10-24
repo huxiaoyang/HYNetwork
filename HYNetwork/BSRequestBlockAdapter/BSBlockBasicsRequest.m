@@ -56,9 +56,6 @@
 
 - (BSConstructingBlock)constructingMultipartBlock {
     if ([self requestMethod] == BSRequestMethodUpload) {
-        if (!constructingMultipartBlock) {
-            NSAssert(NO, @"必须实现Multipart回调");
-        }
         return constructingMultipartBlock;
     }
     return nil;
@@ -114,9 +111,6 @@
 
 - (BSDownloadDestinationBlock)downloadDestinationBlock {
     if ([self requestMethod] == BSRequestMethodDownload) {
-        if (!((NSURL *)downloadDestinationBlock).absoluteString.length) {
-            NSAssert(NO, @"必须实现downloadDestination回调");
-        }
         return downloadDestinationBlock;
     }
     return nil;

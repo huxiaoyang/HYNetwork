@@ -64,6 +64,7 @@ typedef void (^BSRequestProgress)(NSProgress * _Nullable progress);
  *  @return 请求的参数列表
  */
 - (nullable id)requestArgument;
+@property (nonatomic, strong, readonly) id parameters;
 
 
 /**

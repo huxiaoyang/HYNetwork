@@ -185,6 +185,7 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
     if (_config.parametersFilter) {
         parameters = [_config.parametersFilter filterParameter:parameters request:request];
     }
+    [request setValue:parameters forKey:@"_parameters"];
     
     if ([request requestMethod] == BSRequestMethodGet) {
         request.currentURLSessionDataTask = [_manager GET:requestURL
