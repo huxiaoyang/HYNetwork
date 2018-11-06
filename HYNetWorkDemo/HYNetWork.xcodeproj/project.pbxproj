@@ -128,12 +128,12 @@
 		7550ACF42133FE45000908A1 /* BSRequestBlockAdapter */ = {
 			isa = PBXGroup;
 			children = (
-				7550ACF52133FE45000908A1 /* BSDownloadAdapterProtocol.h */,
-				7550ACF62133FE45000908A1 /* BSRequestAdapter.m */,
-				7550ACF72133FE45000908A1 /* BSBlockBasicsRequest.h */,
 				7550ACF82133FE45000908A1 /* BSRequestAdapterProtocol.h */,
+				7550ACF52133FE45000908A1 /* BSDownloadAdapterProtocol.h */,
 				7550ACF92133FE45000908A1 /* BSCacheRequestAdapterProtocol.h */,
 				7550ACFA2133FE45000908A1 /* BSRequestAdapter.h */,
+				7550ACF62133FE45000908A1 /* BSRequestAdapter.m */,
+				7550ACF72133FE45000908A1 /* BSBlockBasicsRequest.h */,
 				7550ACFB2133FE45000908A1 /* BSBlockBasicsRequest.m */,
 			);
 			path = BSRequestBlockAdapter;

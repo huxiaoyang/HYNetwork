@@ -452,9 +452,10 @@ static const void *kBSRequestKey = @"com.XiaoYang.BSRequestKey";
             NSDictionary *dict = @{@"userInfo" : request};
             [[NSNotificationCenter defaultCenter] postNotificationName:BSAPIClientRequestFailureNotification object:nil userInfo:dict];
         }
-        
-        if (request.successCompletionBlock) {
-            request.successCompletionBlock(request);
+        else {
+            if (request.successCompletionBlock) {
+                request.successCompletionBlock(request);
+            }
         }
         
         [request clearCompletionBlock];
